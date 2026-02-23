@@ -52,8 +52,8 @@ class Maze:
             walls: list = []
 
             while rnd_t is not None:
-                for i in [-1, 1]:
-                    for j in [-1, 1]:
+                for i in [-2, 2]:
+                    for j in [-2, 2]:
                         x_tile = self.get_tile(m_map, rnd_t.x + i, rnd_t.y)
                         if x_tile is not None:
                             if x_tile.type is not TileType.FLOOR:
