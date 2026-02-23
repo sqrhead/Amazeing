@@ -1,0 +1,27 @@
+*** Maze ***
+
+ooooooooooooooooooooooooooo########################
+ooooooooooooooooooooooooooo########################
+oooooooooooooooooooooooooooooo#####################
+oooooooooooooooooooooooooo#ooo#####################
+oooooooooooooooooooooooooooo#######################
+oooooooooooooooooooooooo##o########################
+oooooooooooooooooooooooo###########################
+ooooooooooooooooooooooooo##########################
+oooooooooooooooooooooooo###########################
+ooooooooooooooooooooooooo##########################
+ooooooooooooooooooooooooo##########################
+ooooooooooooooooooooooo############################
+ooooooooooooooooooooooo############################
+ooooooooooooooooooooo##############################
+ooooooooooooooooooooo##############################
+ooooooooooooooooooooo##############################
+ooooooooooooooo##o#o###############################
+ooo##ooooo#ooo#####o###############################
+o#####o#o####o#####o###############################
+o##################################################
+###################################################
+###################################################
+###################################################
+###################################################
+###################################################
