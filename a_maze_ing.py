@@ -84,7 +84,6 @@ class Maze:
                 neighbors.append(neighbor)
         return neighbors
 
-
     def generate_grid(self) -> None:
         # Create base Grid
         # The grid is created and every '1' cell has 4 walls
@@ -119,7 +118,6 @@ class Maze:
                             file.write('██')
                         case 1:
                             file.write('░░')
-
 
     def create_maze(self) -> None:
         # stack where to put visited cells but unused
