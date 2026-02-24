@@ -9,7 +9,7 @@ Phase 1: Environment & Standards
 
 Phase 2: The Core (mazegen module)
 
-    [ ] Generation Algorithm: Implement the Recursive Backtracker (Depth-First Search).
+    [ ] Generation Algorithm: Implement the Recursive   tracker (Depth-First Search).
 
     [ ] The "42" Easter Egg: Logic to carve a "42" shape using closed cells.
 
