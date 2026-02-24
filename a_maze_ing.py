@@ -215,6 +215,11 @@ if __name__ == "__main__":
     print("\033[1;37m0) Quit\t1) Generate Again")
 
 
+    print("┏━━━━━━━━━━┓")
+    print("┃          ┃")
+    print("┣   DAWG   ┫")
+    print("┃          ┃")
+    print("┗━━━━━━━━━━┛")
 
 
 # ASCII
