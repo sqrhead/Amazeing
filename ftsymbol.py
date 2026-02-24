@@ -10,10 +10,31 @@
 '''
 
 class FTSymbol:
-    def __init__(self):
-        self.width: int = 8
-        self.height: int = 7
-        self.closed_cell: str = '#'
-        self.open_cell: str = '.'
-        ...
+
+    @staticmethod
+    def get_area() -> list[list[str]]:
+        area: list[list[str]] = [
+            ["#....###"],
+            ["#......#"],
+            ["###..###"],
+            ["..#..#.."],
+            ["..#..###"],
+        ]
+        return area
+
+    @staticmethod
+    def get_width() -> int:
+        return 8
+
+    @staticmethod
+    def get_height() -> int:
+        return 5
+
+    @staticmethod
+    def get_closed_cell_type() -> str:
+        return '#'
+
+    @staticmethod
+    def get_open_cell_type() -> str:
+        return '.'
     ...

@@ -95,6 +95,32 @@ class Maze:
                 if y % 2 == 1 and x % 2 == 1:
                     c.type = 1
 
+    def display_maze(self) -> None:
+        print("\033[0;36m******** A MAZE ING *************")
+        for y in range(self.height):
+            print()
+            for x in range(self.width):
+                cell = self.get_cell(x, y)
+                match cell.type:
+                    case 0:
+                        print("\033[0;33m██", end='')
+                    case 1:
+                        print("\033[0;30m  ", end='')
+        print()
+
+    def display_on_file(self, file_name: str) -> None:
+        with open(file_name, 'w') as file:
+            file.write("*** Maze ***\n")
+            for y in range(self.height):
+                file.write('\n')
+                for x in range(self.width):
+                    match self.get_cell(x, y).type:
+                        case 0:
+                            file.write('██')
+                        case 1:
+                            file.write('░░')
+
+
     def create_maze(self) -> None:
         # stack where to put visited cells but unused
         stack: list[Cell] = []
@@ -181,31 +207,24 @@ class Maze:
 
 
 if __name__ == "__main__":
-    maze: Maze = Maze(50, 25)
+    maze: Maze = Maze(30,25)
     maze.generate_grid()
     maze.create_maze()
+    maze.display_maze()
+    maze.display_on_file('mdisplay.txt')
 
-    with open('maze_display.txt', 'w') as file:
-        file.write("*** Maze ***\n")
-        for y in range(maze.height):
-            file.write('\n')
-            for x in range(maze.width):
-                match maze.get_cell(x, y).type:
-                    case 0:
-                        file.write('▓')
-                    case 1:
-                        file.write('░')
-                # file.write(str(maze.get_cell(x, y).type))
 
-    for y in range(maze.height):
-        print()
-        for x in range(maze.width):
-            cell = maze.get_cell(x, y)
-            match cell.type:
-                case 0:
-                    print("\033[0;33m#", end='')
-                case 1:
-                    print("\033[1;30m░", end='')
-    print()
+    print("\033[1;37m0) Quit\t1) Generate Again")
 
+
+
+
+# ASCII
+# Light
 # ▓ ░
+# Heavy
+# █  heavy block
+# Double block
+# ██
+# Cooler
+# ┃ ━ ┏ ┓ ┗ ┛ ┣ ┫ ┳ ┻ ╋
