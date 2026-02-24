@@ -203,9 +203,9 @@ if __name__ == "__main__":
             cell = maze.get_cell(x, y)
             match cell.type:
                 case 0:
-                    print("\033[1;32m▓", end='')
+                    print("\033[0;33m#", end='')
                 case 1:
-                    print("\033[1;33m░", end='')
+                    print("\033[1;30m░", end='')
     print()
 
 # ▓ ░
