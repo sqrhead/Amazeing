@@ -1,77 +1,211 @@
 import random
-from enum import Enum
-from typing import Callable
 
 # Algo for the maze: Recursive Backtracking
 
-class TileType:
+'''
+The maze need to start like this:
+###########
+#.#.#.#.#.#
+###########
+#.#.#.#.#.#
+###########
+#.#.#.#.#.#
+###########
+this algo creates a perfect maze
 
-    # WALL = '█'
-    # FLOOR = ' '
+TODO:
+- Start with grid [w,h]
+- Make cell into wall for all the grid
 
-    WALL = '#'
-    FLOOR = 'o'
-
-class Tile:
+'''
+class Cell:
     def __init__(self, x: int, y: int):
-        self.x: int = x
-        self.y: int = y
-
-        self.type: TileType = TileType.WALL
-
+        self.x = x
+        self.y = y
+        self.type = 0
+        self.visited = False
 
 class Maze:
     def __init__(self, width: int, height: int):
+        if width % 2 == 0:
+            width += 1
+        if height % 2 == 0:
+            height += 1
         self.width:int  = width
         self.height: int = height
-        self.tiles: list[list[Tile]] = []
+        self.cells: list[Cell] = []
 
-    def generate(self) -> None:
-        m_map = []
+    def get_cell(self, x: int, y: int) -> Cell:
+        for cell in self.cells:
+            if cell.x == x and cell.y == y:
+                return cell
+        return None
+
+    def is_on_bounds(self, cell: Cell) -> bool:
+        if cell.x == self.width - 1  or cell.x == 0:
+            return True
+        if cell.y == self.height - 1 or cell.y == 0:
+            return True
+        return False
+
+    def get_neighbors(self, cell: Cell) -> list[Cell]:
+        if cell is None:
+            return []
+
+        neighbors: list[Cell] = []
+        # Here we get the neighbors of 'cell' parameter
+        # The cell is added to neighbors only if :
+        # - Its not None
+        # - Its not visited
+        # - Its not on the bounderies of the maze
+
+        for x in [-2, 2]:
+            neighbor: Cell = self.get_cell(cell.x + x, cell.y)
+
+            if neighbor is None:
+                continue
+
+            if self.is_on_bounds(neighbor) is True:
+                continue
+
+            if not neighbor.visited:
+                neighbors.append(neighbor)
+
+        for y in [-2, 2]:
+            neighbor: Cell = self.get_cell(cell.x, cell.y + y)
+
+            if neighbor is None:
+                continue
+
+            if self.is_on_bounds(neighbor) is True:
+                continue
+
+            if not neighbor.visited:
+                neighbors.append(neighbor)
+        return neighbors
+
+
+    def generate_grid(self) -> None:
+        # Create base Grid
+        # The grid is created and every '1' cell has 4 walls
         for y in range(self.height):
-            m_map.append([])
             for x in range(self.width):
-                m_map[y].append(Tile(x, y))
-                # if x % 2 == 0 or y % 2 == 0:
-                #     m_map[y][x].type = TileType.WALL
-        
-        self.tile = m_map
+                c: Cell = Cell(x, y)
+                self.cells.append(c)
+                if y % 2 == 1 and x % 2 == 1:
+                    c.type = 1
 
-        # for y in range(self.height):
-        #     for x in range(self.width):
-        #         if m_map[y][x].type is TileType.FLOOR:
-        #             self.free_tiles.append(m_map[y][x])
-        
-        curr_t = m_map[self.height // 2][self.width // 2]
-        curr_t.type = TileType.FLOOR
-        walls = []
+    def create_maze(self) -> None:
+        # stack where to put visited cells but unused
+        stack: list[Cell] = []
+        # current cell, the cell where we are going to work on
+        # random cell for the moment, later add seed consant behaviour
+        rnd_x = random.randrange(1, self.width, 2)
+        rnd_y = random.randrange(1, self.height, 2)
+        curr_cell: Cell = self.get_cell(rnd_x, rnd_y)
+        if curr_cell is None:
+            raise SystemExit("Error: Failed to create Maze")
 
-        while curr_t is not None:
-            for y in [-1, 1]:
-                for x in [-1, 1]:
-                    x_tile = m_map[curr_t.y][curr_t.x + x]
-                    y_tile = m_map[curr_t.y + y][curr_t.x]
-                    if x_tile.type is not TileType.FLOOR:
-                        walls.append(m_map[curr_t.y][curr_t.x + x])
-                    if y_tile.type is not TileType.FLOOR:
-                        walls.append(m_map[curr_t.y + y][curr_t.x])
-            print(f"N of walls : {len(walls)}")
-            try:            
-                curr_t = walls[random.randint(0, len(walls))]
-                curr_t.type = TileType.FLOOR
-            except IndexError:
-                curr_t = None
-            walls.clear()
+        stack.append(curr_cell)
+        # Then we start to loop on the stack
+        # And until the stack is empty the loop continues
+        # This way the loop moves on every possible way
+        # Making this algorithm a good one for 'perfect' maze
+        while len(stack) > 0:
+            # We get the top on the stack with the -1 way (you get the last element of a list)
+
+
+            curr_cell = stack[-1]
+            # Here we need to check for possible errors
+            # It shouldnt happen :>
+            if curr_cell is None:
+                raise SystemExit("Error: Failed to retrieve Cell from stack")
+
+            # We set the visited to True
+            curr_cell.visited = True
+
+            # Then we need to find the next '1' cell we need to go on
+            # We do this by finding the neighbors of the curr_cell
+            # We use the get_neighbors function since is a bit of logic to put here
+            neighbors: list[Cell] = self.get_neighbors(curr_cell)
+
+            # If we dont find neighbors we are at a dead end
+            # This means we need to go back and find a cell that has neighbors
+            # This is the 'Backtracking' part of the 'Recursive Backtracking Algorithm'
+            if len(neighbors) < 1:
+                stack.pop()
+                continue
+
+            # Now that we have our neighbors, we go and choose one randomly
+            # After that we add the others to the stack
+            # We also need to remove(set to 1) the wall between the two neighbors
+
+            new_cell = neighbors[random.randint(0, len(neighbors) - 1)]
+
+            # neighbors.remove(new_cell)
+
+            # for cell in neighbors:
+            #     if not cell in stack:
+            #         stack.append(cell)
+
+            # we append it after so its on top, remember this is a stack like push_swap
+            new_cell.visited = True
+            stack.append(new_cell)
+
+            # Now we need to set the wall in between to 1, and it will become a tunnel
+            # We do this with a simple formula:
+            # current cell X - new cell X divided by 2
+            # try/except the division zero or it will crash
+            try:
+                wall_x: int = (curr_cell.x + new_cell.x) // 2
+            except ZeroDivisionError:
+                wall_x = 0
+
+            try:
+                wall_y: int = (curr_cell.y +  new_cell.y) // 2
+            except ZeroDivisionError:
+                wall_y = 0
+
+            wall_cell: Cell = self.get_cell(wall_x, wall_y)
+
+            if wall_cell is None:
+                print(f"[ErrorInfo] : Wall.x {curr_cell.x + wall_x}, Wall.y {curr_cell.y + wall_y}")
+                raise SystemExit("[Error]: WallCell couldnt be found")
+
+            wall_cell.visited = True
+            wall_cell.type = 1
+
+            # Here it ends, since we did find the next cell to go on
+            # On the next iteration of the loop the new cell will become current
+            # and the process will continue until stack is empty
 
 
 if __name__ == "__main__":
-    maze: Maze = Maze(51, 25)
-    maze.generate()
+    maze: Maze = Maze(50, 25)
+    maze.generate_grid()
+    maze.create_maze()
 
     with open('maze_display.txt', 'w') as file:
         file.write("*** Maze ***\n")
-        for tile_l in maze.tile:
-            file.write("\n")
-            for tile in tile_l:
-                file.write(tile.type)
-        
+        for y in range(maze.height):
+            file.write('\n')
+            for x in range(maze.width):
+                match maze.get_cell(x, y).type:
+                    case 0:
+                        file.write('▓')
+                    case 1:
+                        file.write('░')
+                # file.write(str(maze.get_cell(x, y).type))
+
+    for y in range(maze.height):
+        print()
+        for x in range(maze.width):
+            cell = maze.get_cell(x, y)
+            match cell.type:
+                case 0:
+                    print("\033[1;32m▓", end='')
+                case 1:
+                    print("\033[1;33m░", end='')
+    print()
+
+# ▓ ░
