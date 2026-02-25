@@ -1,6 +1,9 @@
 from pathfinder import Pathfinder
 from mazegen import Maze
 
+# TODO: Divide code to make it cleaner
+# TODO: BFS is a little broky
+
 if __name__ == "__main__":
     # Create Maze class instance
     maze: Maze = Maze(50,30)
@@ -11,7 +14,7 @@ if __name__ == "__main__":
 
     # Pathfinder
     pathfinder: Pathfinder = Pathfinder(maze.cells)
-    path = pathfinder.get_path(maze.get_cell(1,1), maze.get_cell(1,5))
+    path = pathfinder.get_path(maze.get_cell(1,1), maze.get_cell(5,1))
 
     for cell in path:
         new_c = maze.get_cell(cell.x, cell.y)

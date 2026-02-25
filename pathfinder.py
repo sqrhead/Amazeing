@@ -1,6 +1,7 @@
 from cell import Cell
-import math
 
+
+# BFS algorithm for pathfinding
 class Pathfinder:
     def __init__(self, maze: list[Cell]):
         self.maze = maze

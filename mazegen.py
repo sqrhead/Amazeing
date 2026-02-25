@@ -115,17 +115,17 @@ class Maze:
                 cell = self.get_cell(x, y)
                 match cell.type:
                     case 0:
-                        print("\033[0;33m█", end='')
+                        print("\033[0;33m██", end='')
                     case 1:
-                        print("\033[0;30m ", end='')
+                        print("\033[0;30m  ", end='')
                     case 2:
-                        print("\033[0;32m░", end='')
+                        print("\033[0;32m░░", end='')
                     case 3:
-                        print("\033[0;32m█", end='')
+                        print("\033[0;32m██", end='')
                     case 4:
-                        print("\033[1;31m█", end='')
+                        print("\033[1;31m██", end='')
                     case 5:
-                        print("\033[0;34m█", end='')
+                        print("\033[0;34m██", end='')
         print()
 
     def display_on_file(self, file_name: str) -> None:
