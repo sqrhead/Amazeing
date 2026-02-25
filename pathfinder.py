@@ -11,31 +11,27 @@ class Pathfinder:
                 return cell
         return None
 
-    def get_neighbors(self, cell, maze) -> list[Cell]:
+    def get_neighbors(self, cell: Cell) -> list[Cell]:
         neighbors: list[Cell] = []
-        for x in [-1, 1]:
-            new_c = self.get_cell(cell.x + x, cell.y)
-            if new_c.type == 1:
-                neighbors.append(new_c)
-
-        for y in [-1, 1]:
-            new_c = self.get_cell(cell.x, cell.y + y)
-            if new_c.type == 1:
-                neighbors.append(new_c)
+        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            neighbor = self.get_cell(cell.x + dx, cell.y + dy)
+            if neighbor.type == 1 and neighbor is not None:
+                neighbors.append(neighbor)
 
         return neighbors
 
 
-    def get_distance(self, cell: Cell, cell2: Cell) -> float:
-        return float(math.sqrt((cell2.x - cell.x)**2 + (cell2.y -cell.y)**2))
-
     def find_closer(self, cell: Cell, end: Cell) -> Cell:
         neighbors = self.get_neighbors(cell, self.maze)
-        closer: float = self.get_distance(cell, end)
+        print(f"n_neighbors: {len(neighbors)}")
+        distance: float = self.get_distance(cell, end)
+        print(f"distance: {distance}")
         closer_cell: Cell = cell
         for i in neighbors:
-            if self.get_distance(closer_cell, end) < closer:
+            new_distance = self.get_distance(i, end)
+            if new_distance < distance:
                 closer_cell = i
+                distance = new_distance
         return closer_cell
 
     def get_path(self, start: Cell, end: Cell) -> list[Cell]:
@@ -44,12 +40,19 @@ class Pathfinder:
         if end.type != 1:
             raise SystemExit("[Error]: Pathfinder end cell not valid")
 
-        curr_cell: Cell = start
         path: list[Cell] = []
-        path.append(start)
-        while curr_cell is not end:
-            print(f"curr_cell: {curr_cell.x}, {curr_cell.y}")
-            curr_cell = self.find_closer(curr_cell, end)
-            path.append(curr_cell)
+        stack: list[Cell] = [start]
+        visited: list[Cell] = []
 
-        return path
+        while len(stack) > 0:
+            path.append(stack.pop())
+            curr_cell = path[-1]
+
+            if curr_cell is end:
+                return path
+
+            for neighbor in self.get_neighbors(curr_cell):
+                if neighbor not in visited:
+                    visited.append(neighbor)
+                    stack.append(neighbor)
+        return []
