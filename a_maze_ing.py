@@ -1,4 +1,5 @@
 import random
+from ftsymbol import FTSymbol
 
 # Algo for the maze: Recursive Backtracking
 
@@ -24,6 +25,7 @@ class Cell:
         self.y = y
         self.type = 0
         self.visited = False
+
 
 class Maze:
     def __init__(self, width: int, height: int):
@@ -94,6 +96,30 @@ class Maze:
                 if y % 2 == 1 and x % 2 == 1:
                     c.type = 1
 
+        # Set cell to 2 for 42 symbol
+        if self.width <= FTSymbol.get_width() or self.height <= FTSymbol.get_height():
+            print("42SYMBOL: Not enough space in the maze")
+            return 
+        start_x = (self.width - FTSymbol.get_width()) // 2
+        start_y = (self.height - FTSymbol.get_height()) // 2
+        print(f"start_x: {start_x}")
+        print(f"start_y: {start_y}")
+        for len_h in range(len(FTSymbol.get_area())):
+            print()
+            for len_w in range(len(FTSymbol.get_area()[0])):
+                print(f"{FTSymbol.get_area()[len_h][len_w]}", end='')
+                cell = self.get_cell(start_x + len_w, start_y + len_h)
+                match FTSymbol.get_area()[len_h][len_w]:
+                    case '#':
+                        cell.type = 2
+                        cell.visited = True
+                        ...
+                    case '.':
+                        cell.type = 1
+                ...
+        print()
+
+
     def display_maze(self) -> None:
         print("\033[0;36m******** A MAZE ING *************")
         for y in range(self.height):
@@ -105,6 +131,8 @@ class Maze:
                         print("\033[0;33m██", end='')
                     case 1:
                         print("\033[0;30m  ", end='')
+                    case 2:
+                        print("\033[0;32m░░", end='')
         print()
 
     def display_on_file(self, file_name: str) -> None:
@@ -213,6 +241,7 @@ if __name__ == "__main__":
 
 
     print("\033[1;37m0) Quit\t1) Generate Again")
+    print("\x1b[0m") # Reset ansi code color
 
 
     print("┏━━━━━━━━━━┓")
