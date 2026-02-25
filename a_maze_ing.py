@@ -109,14 +109,12 @@ class Maze:
             for len_w in range(len(FTSymbol.get_area()[0])):
                 print(f"{FTSymbol.get_area()[len_h][len_w]}", end='')
                 cell = self.get_cell(start_x + len_w, start_y + len_h)
-                match FTSymbol.get_area()[len_h][len_w]:
+                match FTSymbol.get_area()[len_h ][len_w]:
                     case '#':
                         cell.type = 2
                         cell.visited = True
-                        ...
                     case '.':
                         cell.type = 1
-                ...
         print()
 
 
