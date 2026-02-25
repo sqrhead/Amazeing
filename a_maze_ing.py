@@ -1,6 +1,6 @@
 import random
 from ftsymbol import FTSymbol
-
+from parser import Parser
 # Algo for the maze: Recursive Backtracking
 
 '''
@@ -25,6 +25,9 @@ class Cell:
         self.y = y
         self.type = 0
         self.visited = False
+
+    def get_walls_value(self) -> int:
+        ...
 
 
 class Maze:
@@ -70,6 +73,10 @@ class Maze:
             if self.is_on_bounds(neighbor) is True:
                 continue
 
+            # type 2 is the 42 symbol
+            if neighbor.type == 2:
+                continue
+
             if not neighbor.visited:
                 neighbors.append(neighbor)
 
@@ -80,6 +87,9 @@ class Maze:
                 continue
 
             if self.is_on_bounds(neighbor) is True:
+                continue
+
+            if neighbor.type == 2:
                 continue
 
             if not neighbor.visited:
@@ -97,13 +107,16 @@ class Maze:
                     c.type = 1
 
         # Set cell to 2 for 42 symbol
-        if self.width <= FTSymbol.get_width() or self.height <= FTSymbol.get_height():
+        # The subject doesnt require to exit if the space is not enough
+        # So we return early and not put the 42Symbol on the maze
+        if self.width - 2 <= FTSymbol.get_width()  or self.height - 2 <= FTSymbol.get_height():
             print("42SYMBOL: Not enough space in the maze")
-            return 
+            return
         start_x = (self.width - FTSymbol.get_width()) // 2
         start_y = (self.height - FTSymbol.get_height()) // 2
         print(f"start_x: {start_x}")
         print(f"start_y: {start_y}")
+
         for len_h in range(len(FTSymbol.get_area())):
             print()
             for len_w in range(len(FTSymbol.get_area()[0])):
@@ -112,11 +125,10 @@ class Maze:
                 match FTSymbol.get_area()[len_h ][len_w]:
                     case '#':
                         cell.type = 2
-                        cell.visited = True
                     case '.':
                         cell.type = 1
-        print()
 
+        print()
 
     def display_maze(self) -> None:
         print("\033[0;36m******** A MAZE ING *************")
@@ -139,11 +151,14 @@ class Maze:
             for y in range(self.height):
                 file.write('\n')
                 for x in range(self.width):
-                    match self.get_cell(x, y).type:
+                    cell = self.get_cell(x, y)
+                    match cell.type:
                         case 0:
                             file.write('██')
                         case 1:
                             file.write('░░')
+                        case 2:
+                            file.write('▓▓')
 
     def create_maze(self) -> None:
         # stack where to put visited cells but unused
@@ -222,8 +237,12 @@ class Maze:
                 print(f"[ErrorInfo] : Wall.x {curr_cell.x + wall_x}, Wall.y {curr_cell.y + wall_y}")
                 raise SystemExit("[Error]: WallCell couldnt be found")
 
-            wall_cell.visited = True
+            # the wall is a 42 symbol cell
+            # so if use continue to restart the loop
+            if wall_cell.type == 2:
+                continue
             wall_cell.type = 1
+            wall_cell.visited = True
 
             # Here it ends, since we did find the next cell to go on
             # On the next iteration of the loop the new cell will become current
@@ -231,22 +250,22 @@ class Maze:
 
 
 if __name__ == "__main__":
-    maze: Maze = Maze(30,25)
+    maze: Maze = Maze(20,15)
     maze.generate_grid()
     maze.create_maze()
     maze.display_maze()
     maze.display_on_file('mdisplay.txt')
 
 
-    print("\033[1;37m0) Quit\t1) Generate Again")
+    print("\033[1;37m0)Regen 1)Path 3)Color 4)Quit")
     print("\x1b[0m") # Reset ansi code color
 
 
-    print("┏━━━━━━━━━━┓")
-    print("┃          ┃")
-    print("┣   DAWG   ┫")
-    print("┃          ┃")
-    print("┗━━━━━━━━━━┛")
+    # print("┏━━━━━━━━━━┓")
+    # print("┃          ┃")
+    # print("┣   DAWG   ┫")
+    # print("┃          ┃")
+    # print("┗━━━━━━━━━━┛")
 
 
 # ASCII
