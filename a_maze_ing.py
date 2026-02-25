@@ -138,11 +138,11 @@ class Maze:
                 cell = self.get_cell(x, y)
                 match cell.type:
                     case 0:
-                        print("\033[0;33m██", end='')
+                        print("\033[0;33m█", end='')
                     case 1:
-                        print("\033[0;30m  ", end='')
+                        print("\033[0;30m ", end='')
                     case 2:
-                        print("\033[0;32m░░", end='')
+                        print("\033[0;32m░", end='')
         print()
 
     def display_on_file(self, file_name: str) -> None:
@@ -163,6 +163,7 @@ class Maze:
     def create_maze(self) -> None:
         # stack where to put visited cells but unused
         stack: list[Cell] = []
+        # random.seed(32152136216321532432143213243214321)
         # current cell, the cell where we are going to work on
         # random cell for the moment, later add seed consant behaviour
         rnd_x = random.randrange(1, self.width, 2)
@@ -214,7 +215,6 @@ class Maze:
             #         stack.append(cell)
 
             # we append it after so its on top, remember this is a stack like push_swap
-            new_cell.visited = True
             stack.append(new_cell)
 
             # Now we need to set the wall in between to 1, and it will become a tunnel
@@ -250,7 +250,7 @@ class Maze:
 
 
 if __name__ == "__main__":
-    maze: Maze = Maze(20,15)
+    maze: Maze = Maze(50,30)
     maze.generate_grid()
     maze.create_maze()
     maze.display_maze()

@@ -5,13 +5,13 @@ Phase 1: Environment & Standards
 
     [ ] Linting: Configure flake8 and mypy for strict type checking (Python 3.10+).
 
-    [ ] Config Parser: Handle KEY=VALUE input and error management.
+    [V] Config Parser: Handle KEY=VALUE input and error management.
 
 Phase 2: The Core (mazegen module)
 
-    [ ] Generation Algorithm: Implement the Recursive   tracker (Depth-First Search).
+    [V] Generation Algorithm: Implement the Recursive   tracker (Depth-First Search).
 
-    [ ] The "42" Easter Egg: Logic to carve a "42" shape using closed cells.
+    [V] The "42" Easter Egg: Logic to carve a "42" shape using closed cells.
 
     [ ] The Solver: Shortest path calculation (BFS/DFS) outputted as N, E, S, W strings.
 
@@ -19,7 +19,7 @@ Phase 2: The Core (mazegen module)
 
 Phase 3: Visualization & Interaction
 
-    [ ] Display: Terminal ASCII rendering or MiniLibX interface.
+    [V] Display: Terminal ASCII rendering or MiniLibX interface.
 
     [ ] User Controls: Implement keys for re-generation, toggling the solution path, and color rotation.
 
