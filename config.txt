@@ -1,10 +1,9 @@
 # Config file for the A maze ing project
 
-
 WIDTH=50
 HEIGHT=30
 ENTRY=0,0
 EXIT=50,30
 OUTPUT_FILE=maze.txt
-PERFECT=False
+PERFECT=True
 SEED=42

@@ -3,6 +3,7 @@ from mazegen import Maze
 
 # TODO: Divide code to make it cleaner
 # TODO: BFS is a little broky
+# TODO: Number 2 breaks perfect sometimes
 
 if __name__ == "__main__":
     # Create Maze class instance
