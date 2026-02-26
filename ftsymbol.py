@@ -24,7 +24,7 @@ class FTSymbol:
 
     @staticmethod
     def get_width() -> int:
-        return 8
+        return 7
 
     @staticmethod
     def get_height() -> int:

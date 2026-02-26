@@ -1,9 +1,9 @@
 # Config file for the A maze ing project
 
-WIDTH=50
+WIDTH=50 # Is this a valid comment?
 HEIGHT=30
-ENTRY=0,0
+ENTRY=0,0 # Are these coords changable at run time? or i need to force the maze to make these cell free
 EXIT=50,30
 OUTPUT_FILE=maze.txt
-PERFECT=True
+PERFECT=True # Find the real meaning of 'PERFECT'
 SEED=42

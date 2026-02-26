@@ -1,7 +1,13 @@
 from cell import Cell
-
+from collections import deque
 
 # BFS algorithm for pathfinding
+class PathfinderNode:
+    def __init__(self, node: Cell, parent: Cell):
+        self.node = node
+        self.parent = parent
+
+
 class Pathfinder:
     def __init__(self, maze: list[Cell]):
         self.maze = maze
@@ -16,7 +22,7 @@ class Pathfinder:
         neighbors: list[Cell] = []
         for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
             neighbor = self.get_cell(cell.x + dx, cell.y + dy)
-            if neighbor.type == 1 and neighbor is not None:
+            if neighbor is not None and neighbor.type == 1:
                 neighbors.append(neighbor)
 
         return neighbors
@@ -41,19 +47,27 @@ class Pathfinder:
         if end.type != 1:
             raise SystemExit("[Error]: Pathfinder end cell not valid")
 
-        path: list[Cell] = []
-        stack: list[Cell] = [start]
-        visited: list[Cell] = []
 
-        while len(stack) > 0:
-            path.append(stack.pop())
-            curr_cell = path[-1]
+        pn_start: PathfinderNode = PathfinderNode(start, None)
 
-            if curr_cell is end:
+        que = deque([pn_start])
+        visited = [(start.x, start.y)]
+
+        while que:
+            curr = que.popleft()
+
+            if curr.node is end:
+                path = []
+                node = curr
+                while node is not None:
+                    path.append(node.node)
+                    node = node.parent
+                path.reverse()
                 return path
 
-            for neighbor in self.get_neighbors(curr_cell):
-                if neighbor not in visited:
-                    visited.append(neighbor)
-                    stack.append(neighbor)
+            for neighbor in self.get_neighbors(curr.node):
+                if (neighbor.x, neighbor.y) not in visited:
+                    visited.append((neighbor.x, neighbor.y))
+                    pn_neighbor = PathfinderNode(neighbor, curr)
+                    que.append(pn_neighbor)
         return []

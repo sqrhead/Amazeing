@@ -20,6 +20,7 @@ if __name__ == "__main__":
     for cell in path:
         new_c = maze.get_cell(cell.x, cell.y)
         new_c.type = 5
+
     path[0].type = 3
     path[-1].type = 4
 

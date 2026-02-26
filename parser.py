@@ -74,7 +74,7 @@ class Parser:
             raise SystemExit("[Error]: SEED is not in the config file")
         except ValueError:
             raise SystemExit("[Error]: SEED data wrong type [SEED=[int]]")
-        ...
+
     def _config_perfect(self, config_data: dict) -> None:
         try:
             data = config_data['PERFECT']
