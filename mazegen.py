@@ -1,7 +1,9 @@
 import random
 import math
+from time import sleep
 from ftsymbol import FTSymbol
 from cell import Cell
+from collections import deque
 
 '''
 - Wall = 0
@@ -13,13 +15,21 @@ from cell import Cell
 '''
 
 
+#####
+#.#.#
+#####
+#.#.#
+#####
+
+# TODO: Switch form Cell class to Array of int based on Hex value
+
 class Maze:
     def __init__(self, width: int, height: int):
         if width % 2 == 0:
             width += 1
         if height % 2 == 0:
             height += 1
-        self.width:int  = width
+        self.width: int  = width
         self.height: int = height
         self.cells: list[Cell] = []
 
@@ -47,8 +57,8 @@ class Maze:
         # - Its not visited
         # - Its not on the bounderies of the maze
 
-        for x in [-2, 2]:
-            neighbor: Cell = self.get_cell(cell.x + x, cell.y)
+        for x, y in [(-2,0), (0, -2), (2,0), (0, 2)]:
+            neighbor: Cell = self.get_cell(cell.x + x, cell.y + y)
 
             if neighbor is None:
                 continue
@@ -57,29 +67,19 @@ class Maze:
                 continue
 
             # type 2 is the 42 symbol
-            if neighbor.type == 2:
-                continue
+            # if neighbor.type == 2:
+            #     continue
 
             if not neighbor.visited:
+                wall = self.get_cell((cell.x + neighbor.x) // 2, (cell.y + neighbor.y) // 2)
+                if wall and wall.type == 2:
+                    continue
                 neighbors.append(neighbor)
 
-        for y in [-2, 2]:
-            neighbor: Cell = self.get_cell(cell.x, cell.y + y)
-
-            if neighbor is None:
-                continue
-
-            if self.is_on_bounds(neighbor) is True:
-                continue
-
-            if neighbor.type == 2:
-                continue
-
-            if not neighbor.visited:
-                neighbors.append(neighbor)
         return neighbors
 
     def generate_grid(self) -> None:
+        # TODO: Put here entry/exit cells
         # Create base Grid
         # The grid is created and every '1' cell has 4 walls
         for y in range(self.height):
@@ -89,43 +89,54 @@ class Maze:
                 if y % 2 == 1 and x % 2 == 1:
                     c.type = 1
 
+        # cell_entry = self.get_cell(1, 1)
+        # cell_entry.type = 3
+        # cell_exit = self.get_cell(self.width -10, self.height -3)
+        # cell_exit.type = 4
+
         # Set cell to 2 for 42 symbol
         # The subject doesnt require to exit if the space is not enough
         # So we return early and not put the 42Symbol on the maze
         if self.width - 2 <= FTSymbol.get_width()  or self.height - 2 <= FTSymbol.get_height():
             print("42SYMBOL: Not enough space in the maze")
             return
+
+        # Coords of the 42 symbol (Top Left)
         start_x = (self.width - FTSymbol.get_width()) // 2
         start_y = (self.height - FTSymbol.get_height()) // 2
+
 
         for len_h in range(len(FTSymbol.get_area())):
             for len_w in range(len(FTSymbol.get_area()[0])):
                 cell = self.get_cell(start_x + len_w, start_y + len_h)
                 match FTSymbol.get_area()[len_h ][len_w]:
-                    case '#':
+                    case '2':
                         cell.type = 2
-                    case '.':
+                        cell.visited = True
+                    case '1':
                         cell.type = 1
+                        cell.visited = False
 
     def display_maze(self) -> None:
-        print("\033[0;36m******** A MAZE ING *************")
+        print("\033[6;22m******** A MAZE ING *************")
         for y in range(self.height):
+            # sleep(0.1)
             print()
             for x in range(self.width):
                 cell = self.get_cell(x, y)
                 match cell.type:
-                    case 0:
+                    case 0: # Close
                         print("\033[0;33m██", end='')
-                    case 1:
+                    case 1: # Free
                         print("\033[0;30m  ", end='')
-                    case 2:
-                        print("\033[0;32m░░", end='')
-                    case 3:
-                        print("\033[0;32m██", end='')
-                    case 4:
+                    case 2: # 42 Symbol
+                        print("\033[0;46m░░", end='')
+                    case 3: # Entry
+                        print("\033[1;32m██", end='')
+                    case 4: # Exit
                         print("\033[1;31m██", end='')
-                    case 5:
-                        print("\033[0;34m██", end='')
+                    case 5: # Path from Entry to Exit
+                        print("\033[1;35m██", end='')
         print()
 
     def display_on_file(self, file_name: str) -> None:
@@ -137,25 +148,35 @@ class Maze:
                     cell = self.get_cell(x, y)
                     match cell.type:
                         case 0:
-                            file.write('██')
+                            file.write('#')
                         case 1:
-                            file.write('░░')
+                            file.write('.')
                         case 2:
-                            file.write('▓▓')
+                            file.write('4')
 
     def create_maze(self) -> None:
+        sym_cells = [sym for sym in self.cells if sym.type == 2]
+        curr_cell: Cell = self.get_cell(1,1)
+
         # stack where to put visited cells but unused
         stack: list[Cell] = []
+        stack.append(curr_cell)
+        stack += sym_cells
         # random.seed(32152136216321532432143213243214321)
         # current cell, the cell where we are going to work on
         # random cell for the moment, later add seed consant behaviour
         rnd_x = random.randrange(1, self.width, 2)
         rnd_y = random.randrange(1, self.height, 2)
-        curr_cell: Cell = self.get_cell(rnd_x, rnd_y)
-        if curr_cell is None:
-            raise SystemExit("Error: Failed to create Maze")
 
-        stack.append(curr_cell)
+        curr_cell: Cell = self.get_cell(1,1)
+
+
+        if curr_cell is None:
+            raise SystemExit("Error: Failed to create Maze\nError: Wrong parameters!!")
+
+
+
+        # stack.append(curr_cell)
         # Then we start to loop on the stack
         # And until the stack is empty the loop continues
         # This way the loop moves on every possible way
@@ -165,6 +186,7 @@ class Maze:
 
 
             curr_cell = stack[-1]
+
             # Here we need to check for possible errors
             # It shouldnt happen :>
             if curr_cell is None:
@@ -188,31 +210,17 @@ class Maze:
             # Now that we have our neighbors, we go and choose one randomly
             # After that we add the others to the stack
             # We also need to remove(set to 1) the wall between the two neighbors
-
             new_cell = neighbors[random.randint(0, len(neighbors) - 1)]
-
-            # neighbors.remove(new_cell)
-
-            # for cell in neighbors:
-            #     if not cell in stack:
-            #         stack.append(cell)
 
             # we append it after so its on top, remember this is a stack like push_swap
             stack.append(new_cell)
 
             # Now we need to set the wall in between to 1, and it will become a tunnel
             # We do this with a simple formula:
-            # current cell X - new cell X divided by 2
+            # current cell X + new cell X divided by 2
             # try/except the division zero or it will crash
-            try:
-                wall_x: int = (curr_cell.x + new_cell.x) // 2
-            except ZeroDivisionError:
-                wall_x = 0
-
-            try:
-                wall_y: int = (curr_cell.y +  new_cell.y) // 2
-            except ZeroDivisionError:
-                wall_y = 0
+            wall_x: int = (curr_cell.x + new_cell.x) // 2
+            wall_y: int = (curr_cell.y +  new_cell.y) // 2
 
             wall_cell: Cell = self.get_cell(wall_x, wall_y)
 
@@ -222,9 +230,12 @@ class Maze:
 
             # the wall is a 42 symbol cell
             # so if use continue to restart the loop
-            if wall_cell.type == 2:
-                continue
-            wall_cell.type = 1
+            # if wall_cell.type == 0:
+            #     wall_cell.type = 1
+
+            # wall_cell.type = 1
+            if wall_cell.type != 2:
+                wall_cell.type = 1
             wall_cell.visited = True
 
             # Here it ends, since we did find the next cell to go on

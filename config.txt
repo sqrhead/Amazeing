@@ -1,9 +1,16 @@
 # Config file for the A maze ing project
+# The = need to be attached to the key/value or error is raised
 
-WIDTH=50 # Is this a valid comment?
-HEIGHT=30
-ENTRY=0,0 # Are these coords changable at run time? or i need to force the maze to make these cell free
-EXIT=50,30
+WIDTH=60
+HEIGHT=20
+ENTRY=1,1
+EXIT=48,28
 OUTPUT_FILE=maze.txt
-PERFECT=True # Find the real meaning of 'PERFECT'
+PERFECT=True
 SEED=42
+
+# TODO: Remove comment from variable line
+# TODO: If entry/exit on bounds of maze raise error
+# TODO: Raise error if entry/exit is outside of bounds
+# TODO: Check if negative seed works
+# TODO: Output file funcition error checks#

@@ -2,6 +2,18 @@ from cell import Cell
 from collections import deque
 
 # BFS algorithm for pathfinding
+'''
+The pathfinder  moves from start cell
+until end cell is reached
+ing all neighbors of every curr cell we are on
+putting them on visited stack.
+
+After we reach end cell, we need the to backtrack on the cells
+we go form end and look for his parent until we reach start.
+
+For this reason a PathfinderNode class was created to ensure a better way to do it
+'''
+
 class PathfinderNode:
     def __init__(self, node: Cell, parent: Cell):
         self.node = node
@@ -42,9 +54,9 @@ class Pathfinder:
         return closer_cell
 
     def get_path(self, start: Cell, end: Cell) -> list[Cell]:
-        if start.type != 1:
+        if start is None or start.type != 1:
             raise SystemExit("[Error]: Pathfinder start cell not valid")
-        if end.type != 1:
+        if end is None or end.type != 1:
             raise SystemExit("[Error]: Pathfinder end cell not valid")
 
 

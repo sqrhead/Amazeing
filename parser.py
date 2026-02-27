@@ -10,8 +10,6 @@ from typing import Union, Optional
 
 # This class will manage the reading from the config file
 class Parser:
-    def __init__(self):
-        ...
 
     def _config_width(self, config_data: dict) -> None:
         try:
@@ -106,7 +104,7 @@ class Parser:
             for data in splitted:
                 data_split = data.split('=')
                 if len(data_split) < 2:
-                    raise ValueError("[Error] : Config file not well set upped")
+                    raise ValueError("[Error] : Config file setup, went wrong !!")
                 config_data[data_split[0]] = data_split[1]
 
         # Here we use a series of functions
