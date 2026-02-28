@@ -1,5 +1,9 @@
 import random
+from pathfinder import Pathfinder
 
+# --------------------------------------------------------------------#
+#                            GLOBAL DATA
+# --------------------------------------------------------------------#
 # Coords
 WEST: int = 8
 SOUTH: int = 4
@@ -36,6 +40,7 @@ class MazeGenerator:
     def __init__(self, width: int, height: int):
         self.width = width
         self.height = height
+        self.sym_min_size = 8
         self.grid: list[list[int]] = []
 
         self.visited: list[list[bool]]= []
@@ -55,27 +60,31 @@ class MazeGenerator:
 
 
         # Carve 42 Pattern
-        pattern = [
+        self.pattern = [
             [99,0,0,0,99,99,99],
             [99,0,99,0,0,0,99],
             [99,99,99,0,99,99,99],
             [0,0,99,0,99,0,0],
             [0,0,99,0,99,99,99],
         ]
-        start_x = (self.width - len(pattern[0])) // 2
-        start_y = (self.height - len(pattern)) // 2
+        start_x = (self.width - len(self.pattern[0])) // 2
+        start_y = (self.height - len(self.pattern)) // 2
 
-        for y in range(len(pattern)):
-            for x in range(len(pattern[0])):
-                if pattern[y][x] == 99:
-                    self.grid[start_y + y][start_x + x] = pattern[y][x]
+        # Control to check if self.pattern is too big to fit in the maze
+        if self.width <= self.sym_min_size or self.height <= self.sym_min_size:
+            print("[INFO]: 42Pattern too big to fit in the maze")
+            return
+        for y in range(len(self.pattern)):
+            for x in range(len(self.pattern[0])):
+                if self.pattern[y][x] == 99:
+                    self.grid[start_y + y][start_x + x] = self.pattern[y][x]
                     self.visited[start_y + y][start_x + x] = True
                 else:
                     self.grid[start_y + y][start_x + x] = 15
 
 
     # Params: x for row, y for col and dir for [NORTH, SOUTH, EAST, WEST]
-    def remove_wall(self, x: int, y: int, dir: int) -> None:
+    def _remove_wall(self, x: int, y: int, dir: int) -> None:
         self.grid[y][x] &= ~dir
         dx, dy = DIRECTIONS[dir]
         nx, ny = x + dx, y + dy
@@ -102,10 +111,10 @@ class MazeGenerator:
 
         ...
     # Params:  entry_x,entry_y start point to carv
-    def generate(self, entry_x: int, entry_y: int) -> None:
+    def generate(self) -> None:
 
-        stack: list[tuple[int, int]] = [(entry_x, entry_y)]
-        self.visited[entry_y][entry_x] = True
+        stack: list[tuple[int, int]] = [(0, 0)]
+        self.visited[0][0] = True
 
         while stack:
             x, y = stack[-1]
@@ -114,17 +123,25 @@ class MazeGenerator:
             if neighbors:
                 new_dir = neighbors[random.randint(0, len(neighbors) -1)]
                 if new_dir:
-                    self.remove_wall(x, y, new_dir[2]) # [2] is the direction got from RDIRECTIONS
+                    self._remove_wall(x, y, new_dir[2]) # [2] is the direction got from RDIRECTIONS
                 self.visited[new_dir[1]][new_dir[0]] = True
                 stack.append(( new_dir[0],new_dir[1]))
             else:
                 stack.pop()
 
-
-    def display(self) -> None:
+    # To display the maze we display the WEST and NORTH wall of each grid cel
+    # Then we hard corde the last left wall and the bottom tiles
+    # We create 2 local string variables and add to them what we will print
+    def display(self, sx: int, sy: int, ex: int, ey: int) -> None:
         WALL  = "\033[33m██\033[0m"
         FLOOR = "  "
-        SYMB  = "\033[32m██\033[0m"
+        SYMB  = "\033[0;34m██\033[0m"
+        ENTRY = "\033[32m██\033[0m"
+        EXIT = "\033[1;31m██\033[0m"
+        PATH = "\033[0;35m██\033[0m"
+
+        pathfinder: Pathfinder = Pathfinder(self.grid)
+        path = pathfinder.get_path(sx, sy, ex, ey)
 
         for y in range(self.height):
             top = ""
@@ -133,39 +150,54 @@ class MazeGenerator:
                 cell = self.grid[y][x]
 
                 if cell == 99:
-                    # If it's the pattern, both the 'wall' space
-                    # and the 'cell' space are green blocks.
                     top += SYMB + SYMB
                     mid += SYMB + SYMB
                 else:
-                    # 1. TOP ROW (The North Wall)
-                    # Every cell needs a corner pillar first
+                    # Top left corner
                     top += WALL
-                    # Then the actual North wall or a gap
-                    top += WALL if (cell & NORTH) else FLOOR
+                    # North cell
+                    if not (cell & NORTH) and (x, y) in path:
+                        top += PATH
+                    elif (cell & NORTH):
+                        top += WALL
+                    else:
+                        top += FLOOR
+                    # top += WALL if (cell & NORTH) else FLOOR
 
-                    # 2. MIDDLE ROW (The West Wall)
-                    # The West wall or a gap
-                    mid += WALL if (cell & WEST) else FLOOR
-                    # The walkable center of the cell
-                    mid += FLOOR
+                    # West wall
+                    if not (cell & WEST) and (x,y) in path:
+                        mid += PATH
+                    elif (cell & WEST):
+                        mid += WALL
+                    else:
+                        mid += FLOOR
+                    # mid += WALL if (cell & WEST) else FLOOR
 
-            # Print the rows and close the right-hand side with a final wall
-            # We check the last cell of the row for the pattern to keep the border clean
+                    # Floor between walls
+                    if y == sy and x == sx:
+                        mid += ENTRY
+                    elif y == ey and x == ex:
+                        mid += EXIT
+                    elif (x, y) in path:
+                        mid += PATH
+                    else:
+                        mid += FLOOR
+
+            # Right most wall/symb
             end_cap = SYMB if self.grid[y][self.width-1] == 99 else WALL
             print(top + end_cap)
             print(mid + end_cap)
 
-        # 3. BOTTOM BORDER
-        # Total width is (2 characters per cell) + 1 for the final end cap
+        # Close bottom
         print(WALL * (self.width * 2 + 1))
 
 
+# [BUG] With size (10, 7) sometimes the pattern is modified, and creating loops too
 if __name__ == "__main__":
 
-    mg: MazeGenerator = MazeGenerator(10, 10)
+    mg: MazeGenerator = MazeGenerator(50, 15)
 
     # TODO: Return the maze array
-    mg.generate(1,1)
-    mg.display()
+    mg.generate()
+    mg.display(2, 2, mg.width - 1, mg.height -1)
     ...
