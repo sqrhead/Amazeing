@@ -32,7 +32,6 @@ OPPOSITES: dict[int, int] = {
 }
 
 
-
 class MazeGenerator:
     def __init__(self, width: int, height: int):
         self.width = width
@@ -121,40 +120,11 @@ class MazeGenerator:
             else:
                 stack.pop()
 
+
     def display(self) -> None:
-
-        for y in range(self.height):
-            # Draw top side
-            for x in range(self.width):
-                if self.grid[y][x] == 99:
-                    # print("\033[0;32m+##\033[00m", end="")
-                    print("+##", end="")
-                elif self.grid[y][x] & NORTH:
-                    print("+--", end="")
-                else:
-                    print("+  ", end="")
-            print("+")
-            # Draw west side
-            for x in range(self.width):
-                if self.grid[y][x] == 99:
-                    # print("\033[0;32m+##\033[00m", end="")
-                    print("+##", end="")
-                elif self.grid[y][x] & WEST:
-                    print("|  ", end="")
-                else:
-                    print("   ", end="")
-            print("|")
-
-        # Draw bottom line
-        for x in range(self.width):
-            print("+--", end="")
-        print("+")
-
-
-    def display_blk(self) -> None:
-        WALL  = "\033[33m██\033[0m"   # Yellow wall
-        FLOOR = "  "                   # Passage (2 spaces)
-        SYMB  = "\033[32m██\033[0m"   # Green pattern
+        WALL  = "\033[33m██\033[0m"
+        FLOOR = "  "
+        SYMB  = "\033[32m██\033[0m"
 
         for y in range(self.height):
             top = ""
@@ -191,13 +161,11 @@ class MazeGenerator:
         print(WALL * (self.width * 2 + 1))
 
 
-
-
 if __name__ == "__main__":
 
-    mg: MazeGenerator = MazeGenerator(20, 15)
+    mg: MazeGenerator = MazeGenerator(10, 10)
 
     # TODO: Return the maze array
     mg.generate(1,1)
-    mg.display_blk()
+    mg.display()
     ...
