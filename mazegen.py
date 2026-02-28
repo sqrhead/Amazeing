@@ -1,5 +1,6 @@
 import random
 from pathfinder import Pathfinder
+from filehex import FileHex
 
 # --------------------------------------------------------------------#
 #                            GLOBAL DATA
@@ -195,9 +196,13 @@ class MazeGenerator:
 # [BUG] With size (10, 7) sometimes the pattern is modified, and creating loops too
 if __name__ == "__main__":
 
-    mg: MazeGenerator = MazeGenerator(50, 25)
+    mg: MazeGenerator = MazeGenerator(20, 10)
+
 
     # TODO: Return the maze array
     mg.generate()
     mg.display(2, 2, mg.width - 1, mg.height -1)
+
+    flhex: FileHex = FileHex(mg.grid, None, 'output.txt')
+    flhex.generate()
     ...
