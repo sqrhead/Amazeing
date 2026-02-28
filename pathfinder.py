@@ -1,5 +1,4 @@
 from __future__ import annotations
-from cell import Cell
 from collections import deque
 '''
 ***** Class PathfinderNode ************************************************************************
