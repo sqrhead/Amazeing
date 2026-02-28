@@ -5,6 +5,7 @@
 
 import sys
 
+print(">> Start")
 if len(sys.argv) != 2:
     print(f"Usage: python3 {sys.argv[0]} <output_file>")
     sys.exit(1)
@@ -23,3 +24,5 @@ for r in range(len(g)):
                     (r >= len(g)-1 or (v >> 2) & 1 == g[r+1][c] & 1),
                     (c < 1 or (v >> 3) & 1 == (g[r][c-1] >> 1) & 1)]):
             print(f'Wrong encoding for ({c},{r})')
+
+print(">> End")

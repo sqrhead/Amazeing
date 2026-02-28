@@ -3,7 +3,7 @@ from pathfinder import Pathfinder
 from filehex import FileHex
 
 # --------------------------------------------------------------------#
-#                            GLOBAL DATA
+#                            GLOBAL DATA                              #
 # --------------------------------------------------------------------#
 # Coords
 WEST: int = 8
@@ -62,11 +62,11 @@ class MazeGenerator:
 
         # Carve 42 Pattern
         self.pattern = [
-            [99,0,0,0,99,99,99],
-            [99,0,99,0,0,0,99],
-            [99,99,99,0,99,99,99],
-            [0,0,99,0,99,0,0],
-            [0,0,99,0,99,99,99],
+            [99,0,0,0,0,99,99,99],
+            [99,0,99,0,0,0,0,99],
+            [99,99,99,0,0,99,99,99],
+            [0,0,99,0,0,99,0,0],
+            [0,0,99,0,0,99,99,99],
         ]
         start_x = (self.width - len(self.pattern[0])) // 2
         start_y = (self.height - len(self.pattern)) // 2
@@ -114,8 +114,8 @@ class MazeGenerator:
     # Params:  entry_x,entry_y start point to carv
     def generate(self) -> None:
 
-        stack: list[tuple[int, int]] = [(0, 0)]
-        self.visited[0][0] = True
+        stack: list[tuple[int, int]] = [(self.width - 1, self.height -1)]
+        self.visited[self.height - 1][self.width -1] = True
 
         while stack:
             x, y = stack[-1]
@@ -139,11 +139,11 @@ class MazeGenerator:
         SYMB  = "\033[0;36m██\033[0m"
         ENTRY = "\033[32m██\033[0m"
         EXIT = "\033[1;31m██\033[0m"
-        PATH = "\033[1;55m██\033[0m"
+        PATH = "\033[1;55m++\033[0m"
 
         pathfinder: Pathfinder = Pathfinder(self.grid)
         path = pathfinder.get_path(sx, sy, ex, ey)
-
+        # path = []
         for y in range(self.height):
             top = ""
             mid = ""
@@ -193,7 +193,9 @@ class MazeGenerator:
         print(WALL * (self.width * 2 + 1))
 
 
+
 # [BUG] With size (10, 7) sometimes the pattern is modified, and creating loops too
+# [BUG] Hex file has false data on SYMB cells since they are forced as special (99)
 if __name__ == "__main__":
 
     mg: MazeGenerator = MazeGenerator(20, 10)
@@ -201,8 +203,12 @@ if __name__ == "__main__":
 
     # TODO: Return the maze array
     mg.generate()
-    mg.display(2, 2, mg.width - 1, mg.height -1)
+    mg.fix_pattern_borders()
+    mg.display(2, 2, 19, 9)
 
-    flhex: FileHex = FileHex(mg.grid, None, 'output.txt')
+    pathfinder = Pathfinder(mg.grid)
+    path = pathfinder.get_path(2, 2, 19, 9)
+
+    flhex: FileHex = FileHex(mg.grid, path, 'output.txt')
     flhex.generate()
     ...
