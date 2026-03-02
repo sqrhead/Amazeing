@@ -3,14 +3,9 @@
 
 WIDTH= 12
 HEIGHT= 15
-ENTRY= 13, 6
-EXIT= 4,4
+ENTRY= 11, 6
+EXIT= 11,4
 OUTPUT_FILE= output.txt
 PERFECT= true
 
-
-# TODO: Remove comment from variable line or not
-# TODO: If entry/exit on bounds of maze raise error
-# TODO: Raise error if entry/exit is outside of bounds
-# TODO: Check if negative seed works
 # TODO: Output file  error checks#

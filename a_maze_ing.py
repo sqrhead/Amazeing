@@ -8,6 +8,7 @@ from pathfinder import Pathfinder
 from parser import Parser
 from displayer import Displayer
 
+# [TODO] Fix filehex shit, entry/exit
 # its kinda shit :>
 if __name__ == "__main__":
 

@@ -1,6 +1,7 @@
 from typing import Union, Optional
 import random
 
+# [TODO] Bounds check on entry/exit
 # This class will manage the reading from the config file
 class Parser:
 
@@ -38,6 +39,10 @@ class Parser:
             data = data.strip()
             data = data.split(',')
             config_data['ENTRY'] = (int(data[0]), int(data[1]))
+            if int(data[0]) < 0 or int(data[0]) > config_data['WIDTH'] -1:
+                raise SystemExit("[Error] Config file, ENTRY value on outside of bounds")
+            elif int(data[1]) < 0 or int(data[0]) > config_data['HEIGHT'] -1:
+                raise SystemExit("[Error] Config file, ENTRY value on outside of bounds")
         except KeyError:
             raise SystemExit("[Error]: ENTRY is not in the config file")
         except ValueError:
@@ -49,6 +54,11 @@ class Parser:
             data = data.strip()
             data = data.split(',')
             config_data['EXIT'] = (int(data[0]), int(data[1]))
+
+            if int(data[0]) < 0 or int(data[0]) > config_data['WIDTH'] -1:
+                raise SystemExit("[Error] Config file, EXIT value on outside of bounds")
+            elif int(data[1]) < 0 or int(data[0]) > config_data['HEIGHT'] -1:
+                raise SystemExit("[Error] Config file, EXIT value on outside of bounds")
         except KeyError:
             raise SystemExit("[Error]: EXIT is not in the config file")
         except ValueError:

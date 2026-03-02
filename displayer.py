@@ -23,9 +23,10 @@ class Displayer:
             "\033[0;36m",
             "\033[1;31m",
         ]
-
+        # Config controls
         if start in pattern_cells:
             raise SystemExit("[Error] Config file, ENTRY value on SYMBOL")
+
         if end in pattern_cells:
             raise SystemExit("[Error] Config file, EXIT value on SYMBOL")
 
