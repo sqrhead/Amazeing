@@ -1,3 +1,3 @@
-[TODO] Test tha shit
-[TODO] Dawg cmon
-[TODO] Marvin stay chill
+- [TODO] Test tha shit
+- [TODO] Dawg cmon
+- [TODO] Marvin stay chill
