@@ -37,7 +37,7 @@ OPPOSITES: dict[int, int] = {
 
 
 class MazeGenerator:
-    def __init__(self, width: int, height: int, seed: Optional[int] = 42):
+    def __init__(self, width: int, height: int, seed: Optional[int] = 42) -> None:
         self.width = width # Width of the grid
         self.height = height # Height of the grid
         self.sym_min_size = 8 # Min size of the maze to print the SYMB
@@ -78,7 +78,7 @@ class MazeGenerator:
         for y in range(len(self.pattern)):
             for x in range(len(self.pattern[0])):
                 if self.pattern[y][x] == 1:
-                    self.grid[self.start_y + y][self.start_x + x] = 15 # switch to 15
+                    self.grid[self.start_y + y][self.start_x + x] = (WEST | SOUTH | EAST | NORTH)
                     self.visited[self.start_y + y][self.start_x + x] = True
                     self.pattern_cells.append((self.start_x + x, self.start_y + y))
                 else:
@@ -89,10 +89,6 @@ class MazeGenerator:
         if (x, y) in self.pattern_cells:
             return True
         return False
-
-    # 101010 42
-    # 100010 34
-    # 001000 34
 
     # Params: x for row, y for col and dir for [NORTH, SOUTH, EAST, WEST]
     def _remove_wall(self, x: int, y: int, dir: int) -> None:
@@ -120,14 +116,20 @@ class MazeGenerator:
 
         return neighbors
 
-    def _unperfect(self):
-        for i in range(self.width // 10 + 1):
-            self.visited[random.randint(1, self.height - 2)][random.randint(1, self.width - 2)] = True
-        ...
+    def _unperfect(self) -> None:
+        # [TODO] In case once of the cell visited is start/end everything crashes
+        target = self.width // 10 + 1
+        counter = 0
+        while counter <= target:
+            rnd_x = random.randint(1, self.width - 2)
+            rnd_y = random.randint(1, self.height - 2)
+            if self._is_inside_pattern(rnd_x, rnd_y) is False:
+                self.visited[rnd_y][rnd_x] = True
+                counter += 1
 
     # ************************ PUBLIC **************************************** #
     # Params:  entry_x,entry_y start point to carv
-    def generate(self, perfect: bool = True) -> None:
+    def generate(self, perfect: bool = True) -> list[list[int]]:
 
         # duh
         start_point_x: int = self.width // 2
@@ -152,6 +154,7 @@ class MazeGenerator:
                 stack.append(( new_dir[0],new_dir[1]))
             else:
                 stack.pop()
+        return self.grid
 
 
     # To display the maze we display the WEST and NORTH wall of each grid cel
@@ -166,7 +169,7 @@ class MazeGenerator:
         PATH = "\033[1;55m ■\033[0m"
 
         pathfinder: Pathfinder = Pathfinder(self.grid)
-        path = pathfinder.get_path(sx, sy, ex, ey)
+        path = pathfinder.get_path((sx, sy), (ex, ey))
         # path = []
         for y in range(self.height):
             top = ""
@@ -228,7 +231,7 @@ class MazeGenerator:
 # [BUG] Hex file has false data on SYMB cells since they are forced as special (99)
 if __name__ == "__main__":
 
-    mg: MazeGenerator = MazeGenerator(40, 10, random.randint(1, 2**32))
+    mg: MazeGenerator = MazeGenerator(25, 10, random.randint(1, 2**32))
 
 
     # TODO: Return the maze array

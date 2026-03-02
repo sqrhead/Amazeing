@@ -30,7 +30,7 @@ class Parser:
         except KeyError:
             raise SystemExit("[Error]: HEIGHT is not in the config file")
         except ValueError:
-            raise SystemExit("[Error]: HEIGHT value is not a valid number\nSetting HEIGHT to Default")
+            raise SystemExit("[Error]: HEIGHT value is not a valid number")
 
     def _config_entry(self, config_data: dict) -> None:
         try:

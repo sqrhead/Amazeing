@@ -48,16 +48,16 @@ class Pathfinder:
         return neighbors
 
 
-    def get_path(self, sx: int, sy: int, ex: int, ey: int) -> list[tuple[int, int]]:
-        pn_start: PathfinderNode = PathfinderNode(sx, sy)
+    def get_path(self, start: tuple[int, int], end: tuple[int, int]) -> list[tuple[int, int]]:
+        pn_start: PathfinderNode = PathfinderNode(start[0], start[1])
 
         que = deque([pn_start])
-        visited = [(sx, sy)]
+        visited = [start]
 
         while que:
             curr = que.popleft()
 
-            if curr.equal(ex, ey):
+            if curr.equal(end[0], end[1]):
                 path = []
                 node = curr
                 while node is not None:
