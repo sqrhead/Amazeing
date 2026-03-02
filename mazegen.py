@@ -1,7 +1,9 @@
 import random
+from typing import Optional
 from time import sleep
 from pathfinder import Pathfinder
 from filehex import FileHex
+from displayer import Displayer
 
 # Coords
 WEST: int = 8
@@ -35,11 +37,11 @@ OPPOSITES: dict[int, int] = {
 
 
 class MazeGenerator:
-    def __init__(self, width: int, height: int):
+    def __init__(self, width: int, height: int, seed: Optional[int] = 42):
         self.width = width # Width of the grid
         self.height = height # Height of the grid
         self.sym_min_size = 8 # Min size of the maze to print the SYMB
-
+        random.seed(seed)
         self.grid: list[list[int]] = [] # The grid :>
         self.visited: list[list[bool]]= [] # Nested lists needed for the Recursive Backtracking
         self.pattern_cells: list[tuple[int, int]] = [] # Used to check if coords are inside pattern cells
@@ -118,6 +120,11 @@ class MazeGenerator:
 
         return neighbors
 
+    def _unperfect(self):
+        for i in range(self.width // 10 + 1):
+            self.visited[random.randint(1, self.height - 2)][random.randint(1, self.width - 2)] = True
+        ...
+
     # ************************ PUBLIC **************************************** #
     # Params:  entry_x,entry_y start point to carv
     def generate(self, perfect: bool = True) -> None:
@@ -130,6 +137,8 @@ class MazeGenerator:
         stack: list[tuple[int, int]] = [(start_point_x,start_point_y)]
         # Visited cells so we dont need to go there again
         self.visited[start_point_y][start_point_x] = True
+        if not perfect:
+            self._unperfect()
 
         while stack:
             x, y = stack[-1]
@@ -143,6 +152,7 @@ class MazeGenerator:
                 stack.append(( new_dir[0],new_dir[1]))
             else:
                 stack.pop()
+
 
     # To display the maze we display the WEST and NORTH wall of each grid cel
     # Then we hard corde the last left wall and the bottom tiles
@@ -199,7 +209,13 @@ class MazeGenerator:
                         mid += FLOOR
 
             # Right most wall/symb
-            end_cap = SYMB if self.grid[y][self.width-1] == 99 else WALL
+            end_cap = ""
+            if self._is_inside_pattern(y, self.width -1):
+                end_cap += SYMB
+            else:
+                end_cap += WALL
+
+            # end_cap = SYMB if self.grid[y][self.width-1] == 99 else WALL
             print(top + end_cap)
             print(mid + end_cap)
 
@@ -212,15 +228,17 @@ class MazeGenerator:
 # [BUG] Hex file has false data on SYMB cells since they are forced as special (99)
 if __name__ == "__main__":
 
-    mg: MazeGenerator = MazeGenerator(40, 10)
+    mg: MazeGenerator = MazeGenerator(40, 10, random.randint(1, 2**32))
 
 
     # TODO: Return the maze array
-    mg.generate()
+    mg.generate(True)
     mg.display(2, 2, 19, 9)
 
     pathfinder = Pathfinder(mg.grid)
     path = pathfinder.get_path(2, 2, 19, 9)
+    # displayer: Displayer = Displayer(mg.grid, path, (2, 2), (19, 9))
+    # displayer.display(True)
 
     flhex: FileHex = FileHex(mg.grid, path, 'output.txt')
     flhex.generate()

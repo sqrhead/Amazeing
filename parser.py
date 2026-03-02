@@ -1,12 +1,5 @@
-# WIDTH Maze width (number of cells) WIDTH=20
-# HEIGHT Maze height HEIGHT=15
-# ENTRY Entry coordinates (x,y) ENTRY=0,0
-# EXIT Exit coordinates (x,y) EXIT=19,14
-# OUTPUT_FILE Output filename OUTPUT_FILE=maze.txt
-# PERFECT
-
-
 from typing import Union, Optional
+import random
 
 # This class will manage the reading from the config file
 class Parser:
@@ -17,6 +10,8 @@ class Parser:
             data = int(data)
             if data < 5:
                 raise SystemExit("[Error]: WIDTH cant be lower than 5")
+            if data > 100000:
+                raise SystemExit("[Error]: WIDTH cant be higher than 100000")
             config_data['WIDTH'] = data
         except KeyError:
             raise SystemExit("[Error]: WIDTH is not in the config file")
@@ -29,11 +24,13 @@ class Parser:
             data = int(data)
             if data < 5:
                 raise SystemExit("[Error]: HEIGHT cant be lower than 5")
+            if data > 100000:
+                raise SystemExit("[Error]: HEIGHT cant be higher than 100000")
             config_data['HEIGHT'] = data
         except KeyError:
             raise SystemExit("[Error]: HEIGHT is not in the config file")
         except ValueError:
-            raise SystemExit("[Error]: HEIGHT key is not a valid number\nSetting HEIGHT to Default")
+            raise SystemExit("[Error]: HEIGHT value is not a valid number\nSetting HEIGHT to Default")
 
     def _config_entry(self, config_data: dict) -> None:
         try:
@@ -44,7 +41,7 @@ class Parser:
         except KeyError:
             raise SystemExit("[Error]: ENTRY is not in the config file")
         except ValueError:
-            raise SystemExit("[Error]: ENTRY key is not a valid number")
+            raise SystemExit("[Error]: ENTRY value is not a valid number")
 
     def _config_exit(self, config_data: dict) -> None:
         try:
@@ -55,10 +52,16 @@ class Parser:
         except KeyError:
             raise SystemExit("[Error]: EXIT is not in the config file")
         except ValueError:
-            raise SystemExit("[Error]: EXIT key is not a valid number")
+            raise SystemExit("[Error]: EXIT value is not a valid number")
 
     def _config_output(self, config_data: dict) -> None:
-        ...
+        try:
+            data = config_data['OUTPUT_FILE']
+            data = data.strip()
+            if not data.endswith('.txt'):
+                raise SystemExit("[Error]: OUTPUT_FILE invalid file extension (.txt)")
+        except KeyError:
+            raise SystemExit("[Error]: OUTPUT_FILE is not in the config file")
 
     def _config_seed(self, config_data: dict) -> None:
         try:
@@ -69,7 +72,8 @@ class Parser:
                 raise SystemExit("[Error]: SEED data wrong range >=1")
             config_data['SEED'] = data
         except KeyError:
-            raise SystemExit("[Error]: SEED is not in the config file")
+
+            config_data['SEED'] = random.randint(1, 2**32)
         except ValueError:
             raise SystemExit("[Error]: SEED data wrong type [SEED=[int]]")
 
@@ -77,35 +81,39 @@ class Parser:
         try:
             data = config_data['PERFECT']
             data = data.strip()
-            if data == 'True':
+            lower = data.lower()
+            if lower == 'true':
                 config_data['PERFECT'] = True
-            elif data == 'False':
+            elif lower == 'false':
                 config_data['PERFECT'] = False
             else:
-                raise SystemError("[Error]: PERFECT key is not a valid bool")
+                raise SystemExit("[Error]: PERFECT key is not a valid bool")
         except ValueError:
             raise SystemExit("[Error]: PERFECT key is not a valid bool")
 
     def config(self, config_file: Optional[str] = "config.txt") -> dict[str,Union[str, bool, int, list]]:
         config_data: dict = {}
         # We open the file asked in the subject
-        with open(config_file, "r") as file:
+        try:
+            with open(config_file, "r") as file:
 
-            # Then we read it and split on '\n' char
-            content = file.read()
-            splitted = content.strip().split('\n')
-            splitted = [
-                line for line in splitted
-                if line and not line.startswith('#') and '=' in line
+                # Then we read it and split on '\n' char
+                content = file.read()
+                splitted = content.strip().split('\n')
+                splitted = [
+                    line for line in splitted
+                    if line and not line.startswith('#') and '=' in line
 
-            ]
-            # After removing the comments and possible useless data
-            # We go and take the data we need from the config file
-            for data in splitted:
-                data_split = data.split('=')
-                if len(data_split) < 2:
-                    raise ValueError("[Error] : Config file setup, went wrong !!")
-                config_data[data_split[0]] = data_split[1]
+                ]
+                # After removing the comments and possible useless data
+                # We go and take the data we need from the config file
+                for data in splitted:
+                    data_split = data.split('=')
+                    if len(data_split) < 2:
+                        raise ValueError("[Error] : Config file setup, went wrong !!")
+                    config_data[data_split[0]] = data_split[1]
+        except FileNotFoundError :
+            raise SystemExit("[Error] Config file name is not valid")
 
         # Here we use a series of functions
         # They convert the data to the right type
@@ -116,6 +124,7 @@ class Parser:
         self._config_exit(config_data)
         self._config_perfect(config_data)
         self._config_seed(config_data)
+        self._config_output(config_data)
         return config_data
 
 if __name__ == '__main__':

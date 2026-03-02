@@ -1,15 +1,15 @@
 # Config file for the A maze ing project
 # The = need to be attached to the key/value or error is raised
 
-WIDTH=60
-HEIGHT=20
-ENTRY=1,1
-EXIT=48,28
-OUTPUT_FILE=maze.txt
-PERFECT=True
-SEED=42
+WIDTH= 60
+HEIGHT= 20
+ENTRY= 1,1
+EXIT= 48,28
+OUTPUT_FILE= output.txt
+PERFECT= false
 
-# TODO: Remove comment from variable line
+
+# TODO: Remove comment from variable line or not
 # TODO: If entry/exit on bounds of maze raise error
 # TODO: Raise error if entry/exit is outside of bounds
 # TODO: Check if negative seed works
