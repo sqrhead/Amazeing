@@ -16,7 +16,7 @@ DIRECTIONS: dict[int, tuple[int, int]] = {
 }
 
 # Direction to Coords
-RDIRECTIONS: dict[tuple, int] = {
+RDIRECTIONS: dict[tuple[int, int], int] = {
     (0, -1): NORTH,
     (0, 1): SOUTH,
     (1, 0): EAST,

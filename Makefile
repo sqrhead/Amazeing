@@ -18,16 +18,17 @@ debug:
 	.venv/bin/python -m pdb $(MAIN) $(CONFIG)
 
 lint:
-	.venv/bin/flake8 .
+	.venv/bin/flake8 . --exclude=.venv,dist,build
 	.venv/bin/mypy . --warn-return-any \
 		--warn-unused-ignores \
 		--ignore-missing-imports \
 		--disallow-untyped-defs \
-		--check-untyped-defs
+		--check-untyped-defs \
+		--exclude .venv
 
 lint-strict:
-	.venv/bin/flake8 .
-	.venv/bin/mypy . --strict
+	.venv/bin/flake8 . --exclude=.venv,dist,build
+	.venv/bin/mypy . --strict --exclude .venv
 
 clean:
 	find . -type d -name __pycache__ -exec rm -rf {} +

@@ -37,7 +37,7 @@ class FileHex:
         self.exit = exit
         self.filename = filename
         self.hex_table: str = '0123456789ABCDEF'
-        self.coords: dict = {
+        self.coords: dict[tuple[int, int], str] = {
             (0, -1): 'N',
             (0, 1): 'S',
             (-1, 0): 'W',

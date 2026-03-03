@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Any
 import random
 
 
@@ -9,7 +9,10 @@ class Parser:
     each value to its appropriate Python type with bounds checking.
     Lines starting with '#' are treated as comments and ignored.
     """
-    def _config_width(self, config_data: dict) -> None:
+    def _config_width(
+            self,
+            config_data: dict[str, Any]
+            ) -> None:
         """Parse and validate the WIDTH key from config data.
 
         Args:
@@ -20,19 +23,22 @@ class Parser:
             SystemExit: If WIDTH is missing, not a number, or out of range.
         """
         try:
-            data = config_data['WIDTH']
-            data = int(data)
-            if data < 5:
+            data: str = str(config_data['WIDTH'])
+            parsed: int = int(data)
+            if parsed < 5:
                 raise SystemExit("[Error]: WIDTH cant be lower than 5")
-            if data > 100000:
+            if parsed > 100000:
                 raise SystemExit("[Error]: WIDTH cant be higher than 100000")
-            config_data['WIDTH'] = data
+            config_data['WIDTH'] = parsed
         except KeyError:
             raise SystemExit("[Error]: WIDTH is not in the config file")
         except ValueError:
             raise SystemExit("[Error]: WIDTH key is not a valid number")
 
-    def _config_height(self, config_data: dict) -> None:
+    def _config_height(
+            self,
+            config_data: dict[str, Any]
+            ) -> None:
         """Parse and validate the HEIGHT key from config data.
 
         Args:
@@ -43,19 +49,22 @@ class Parser:
             SystemExit: If HEIGHT is missing, not a number, or out of range.
         """
         try:
-            data = config_data['HEIGHT']
-            data = int(data)
-            if data < 5:
+            data: str = str(config_data['HEIGHT'])
+            parsed: int = int(data)
+            if parsed < 5:
                 raise SystemExit("[Error]: HEIGHT cant be lower than 5")
-            if data > 100000:
+            if parsed > 100000:
                 raise SystemExit("[Error]: HEIGHT cant be higher than 100000")
-            config_data['HEIGHT'] = data
+            config_data['HEIGHT'] = parsed
         except KeyError:
             raise SystemExit("[Error]: HEIGHT is not in the config file")
         except ValueError:
             raise SystemExit("[Error]: HEIGHT value is not a valid number")
 
-    def _config_entry(self, config_data: dict) -> None:
+    def _config_entry(
+            self,
+            config_data: dict[str, Any]
+            ) -> None:
         """Parse and validate the ENTRY key from config data.
 
         Args:
@@ -66,20 +75,23 @@ class Parser:
             SystemExit:If ENTRY is missing, wrongly formatted,or out of bounds.
         """
         try:
-            data = config_data['ENTRY']
+            data: str = str(config_data['ENTRY'])
             data = data.strip()
-            data = data.split(',')
-            if len(data) != 2:
+            prsd: list[str] = list(data.split(','))
+            if len(prsd) != 2:
                 raise SystemExit(
                     "[Error] Config file, ENTRY value wrong format"
                     )
-            config_data['ENTRY'] = (int(data[0]), int(data[1]))
+            config_data['ENTRY'] = (int(prsd[0]), int(prsd[1]))
 
-            if int(data[0]) < 0 or int(data[0]) > config_data['WIDTH'] - 1:
+            width: int = int(config_data['WIDTH'])
+            height: int = int(config_data['HEIGHT'])
+
+            if int(prsd[0]) < 0 or int(prsd[0]) > width - 1:
                 raise SystemExit(
                     "[Error] Config file, ENTRY value on outside of bounds"
                     )
-            elif int(data[1]) < 0 or int(data[1]) > config_data['HEIGHT'] - 1:
+            elif int(prsd[1]) < 0 or int(prsd[1]) > height - 1:
                 raise SystemExit(
                     "[Error] Config file, ENTRY value on outside of bounds"
                     )
@@ -88,7 +100,10 @@ class Parser:
         except ValueError:
             raise SystemExit("[Error]: ENTRY value is not a valid number")
 
-    def _config_exit(self, config_data: dict) -> None:
+    def _config_exit(
+            self,
+            config_data: dict[str, Any]
+            ) -> None:
         """Parse and validate the EXIT key from config data.
 
         Args:
@@ -129,7 +144,10 @@ class Parser:
         except ValueError:
             raise SystemExit("[Error]: EXIT value is not a valid number")
 
-    def _config_output(self, config_data: dict) -> None:
+    def _config_output(
+            self,
+            config_data: dict[str, Any]
+            ) -> None:
         """Parse and validate the OUTPUT_FILE key from config data.
 
         Args:
@@ -150,7 +168,10 @@ class Parser:
         except KeyError:
             raise SystemExit("[Error]: OUTPUT_FILE is not in the config file")
 
-    def _config_seed(self, config_data: dict) -> None:
+    def _config_seed(
+            self,
+            config_data: dict[str, Any]
+            ) -> None:
         """Parse and validate the SEED key from config data.
 
         If SEED is not provided, a random seed is generated automatically.
@@ -163,18 +184,21 @@ class Parser:
             SystemExit: If SEED is present but not a valid positive integer.
         """
         try:
-            data = config_data['SEED']
+            data: str = str(config_data['SEED'])
             data = data.strip()
-            data = int(data)
-            if data < 1:
+            parsed: int = int(data)
+            if parsed < 1:
                 raise SystemExit("[Error]: SEED data wrong range >=1")
-            config_data['SEED'] = data
+            config_data['SEED'] = parsed
         except KeyError:
             config_data['SEED'] = random.randint(1, 2**32)
         except ValueError:
             raise SystemExit("[Error]: SEED data wrong type [SEED=[int]]")
 
-    def _config_perfect(self, config_data: dict) -> None:
+    def _config_perfect(
+            self,
+            config_data: dict[str, Any]
+            ) -> None:
         """Parse and validate the PERFECT key from config data.
 
         Args:
@@ -200,7 +224,7 @@ class Parser:
             raise SystemExit("[Error]: PERFECT key is not a valid bool")
 
     def config(self, config_file: str = "config.txt") -> dict[
-        str, Union[str, bool, int, list]
+        str, Any
             ]:
         """Read and parse the maze configuration file.
 
@@ -219,7 +243,7 @@ class Parser:
         Raises:
             SystemExit: If the file is not found or any key is invalid.
         """
-        config_data: dict = {}
+        config_data: dict[str, Any] = {}
         try:
             with open(config_file, 'r') as file:
 
