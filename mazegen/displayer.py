@@ -89,7 +89,7 @@ class Displayer:
                         mid += FLOOR
 
             # Right most wall/symb
-            end_cap = SYMB if (y, self.width - 1) in self.pattern_cells else WALL
+            end_cap = SYMB if (self.width -1, y) in self.pattern_cells else WALL
 
             # end_cap = SYMB if self.grid[y][self.width-1] == 99 else WALL
             print(top + end_cap)

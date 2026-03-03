@@ -165,8 +165,16 @@ class MazeGenerator:
             else:
                 stack.pop()
 
+        for x in range(self.width):
+            self.grid[0][x] |= NORTH
+            self.grid[self.height-1][x] |= SOUTH
+        for y in range(self.height):
+            self.grid[y][0] |= WEST
+            self.grid[y][self.width - 1] |= EAST
+
         if not perfect:
             self._unperfect()
+
         return self.grid
 
 
