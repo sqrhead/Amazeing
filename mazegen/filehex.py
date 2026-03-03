@@ -1,6 +1,19 @@
 
 
 class FileHex:
+    """Writes the maze grid and path to a hexadecimal output file.
+
+    Each cell is encoded as a single hex digit where each bit represents
+    a wall direction (N=1, E=2, S=4, W=8). The output file also contains
+    the entry/exit coordinates and the shortest path as cardinal directions.
+
+    Attributes:
+        grid: 2D list of integers encoding wall states per cell.
+        path: List of (x, y) coordinates representing the shortest path.
+        entry: (x, y) coordinates of the maze entry point.
+        exit: (x, y) coordinates of the maze exit point.
+        filename: Name of the output file to write to.
+    """
     def __init__(
             self,
             grid: list[list[int]],
@@ -9,6 +22,15 @@ class FileHex:
             exit: tuple[int, int],
             filename: str
             ) -> None:
+        """Initialize FileHex with maze data and output filename.
+
+            Args:
+                grid: 2D list of integers encoding wall states per cell.
+                path: List of (x, y) coordinates of the shortest path.
+                entry: (x, y) coordinates of the maze entry point.
+                exit: (x, y) coordinates of the maze exit point.
+                filename: Path to the output file.
+        """
         self.grid = grid
         self.path = path
         self.entry = entry
@@ -23,6 +45,16 @@ class FileHex:
         }
 
     def generate(self) -> None:
+        """Write the maze grid, coordinates and path to the output file.
+
+        The output format is:
+            - One hex digit per cell, one row per line.
+            - An empty line separator.
+            - Entry coordinates as 'x,y'.
+            - Exit coordinates as 'x,y'.
+            - Shortest path as a sequence of N/S/E/W characters.
+            - 'no path' if no path exists between entry and exit.
+        """
         with open(self.filename, 'w') as file:
             # Hex map
             for y in range(len(self.grid)):

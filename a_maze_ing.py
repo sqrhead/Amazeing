@@ -1,6 +1,7 @@
 import random
 import sys
 import os
+from typing import cast
 
 from mazegen import MazeGenerator
 from mazegen import Pathfinder
@@ -17,34 +18,42 @@ if __name__ == "__main__":
     parser: Parser = Parser()
     config_data = parser.config(config_file)
 
+    width: int = cast(int, config_data['WIDTH'])
+    height: int = cast(int, config_data['HEIGHT'])
+    entry: tuple[int, int] = cast(tuple[int, int], config_data['ENTRY'])
+    exit: tuple[int, int] = cast(tuple[int, int], config_data['EXIT'])
+    seed: int = cast(int, config_data['SEED'])
+    perfect: bool = cast(bool, config_data['PERFECT'])
+    output_file: str = cast(str, config_data['OUTPUT_FILE'])
+
     maze_gen: MazeGenerator = MazeGenerator(
-        config_data['WIDTH'],
-        config_data['HEIGHT'],
-        config_data['ENTRY'],
-        config_data['EXIT'],
-        config_data['SEED']
+        width,
+        height,
+        entry,
+        exit,
+        seed
         )
-    grid = maze_gen.generate(config_data['PERFECT'])
+    grid = maze_gen.generate(perfect)
 
     pathfinder: Pathfinder = Pathfinder(maze_gen.grid)
     path: list[tuple[int, int]] = pathfinder.get_path(
-        config_data['ENTRY'],
-        config_data['EXIT']
+        entry,
+        exit
         )
 
     displayer: Displayer = Displayer(
         maze_gen.grid,
         path,
-        config_data['ENTRY'],
-        config_data['EXIT'],
+        entry,
+        exit,
         maze_gen.pattern_cells
         )
     filehex: FileHex = FileHex(
         grid,
         path,
-        config_data['ENTRY'],
-        config_data['EXIT'],
-        config_data['OUTPUT_FILE']
+        entry,
+        exit,
+        output_file
         )
     filehex.generate()
 
@@ -71,20 +80,20 @@ if __name__ == "__main__":
             raise SystemExit()
 
         if choice == '1':
-            maze_gen: MazeGenerator = MazeGenerator(
-                config_data['WIDTH'],
-                config_data['HEIGHT'],
-                config_data['ENTRY'],
-                config_data['EXIT'],
+            maze_gen = MazeGenerator(
+                width,
+                height,
+                entry,
+                exit,
                 random.randint(1, 2**32)
                 )
-            grid = maze_gen.generate(config_data['PERFECT'])
+            grid = maze_gen.generate(perfect)
 
             pathfinder.grid = grid
 
             path = pathfinder.get_path(
-                config_data['ENTRY'],
-                config_data['EXIT']
+                entry,
+                exit
                 )
 
             displayer.grid = grid

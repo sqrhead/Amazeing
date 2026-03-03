@@ -1,5 +1,22 @@
 
 class Displayer:
+    """Renders the maze in the terminal using ANSI color codes.
+
+    Displays the maze grid as a 2D ASCII art with colored walls,
+    entry/exit markers, the 42 pattern, and an optional shortest path.
+    Supports wall color rotation through user interaction.
+
+    Attributes:
+        grid: 2D list encoding wall states per cell as integers.
+        path: List of (x, y) coordinates of the shortest path.
+        sx: Column index of the entry point.
+        sy: Row index of the entry point.
+        ex: Column index of the exit point.
+        ey: Row index of the exit point.
+        pattern_cells: List of (x, y) coordinates of the 42 pattern.
+        width: Number of cells horizontally.
+        height: Number of cells vertically.
+    """
     def __init__(
             self,
             grid: list[list[int]],
@@ -8,6 +25,18 @@ class Displayer:
             end: tuple[int, int],
             pattern_cells: list[tuple[int, int]]
             ) -> None:
+        """Initialize the displayer with maze data.
+
+        Args:
+            grid: 2D list of integers encoding wall states per cell.
+            path: List of (x, y) coordinates of the shortest path.
+            start: (x, y) coordinates of the maze entry point.
+            end: (x, y) coordinates of the maze exit point.
+            pattern_cells: List of (x, y) coords of the 42 pattern.
+
+        Raises:
+            SystemExit: If entry or exit overlap with a pattern cell.
+        """
         self.grid = grid
         self.path = path
         self.sx, self.sy = start
@@ -22,7 +51,6 @@ class Displayer:
             "\033[0;36m",
             "\033[1;31m",
         ]
-        # Config controls
         if start in pattern_cells:
             raise SystemExit("[Error] Config file, ENTRY value on SYMBOL")
 
@@ -30,12 +58,27 @@ class Displayer:
             raise SystemExit("[Error] Config file, EXIT value on SYMBOL")
 
     def set_next_color(self) -> None:
+        """Rotate the wall color to the next one in the color list.
+
+        Moves the current color to the end of the list, making the
+        next color active on the following display call.
+        """
+
         color = self._wall_colors[0]
         self._wall_colors.remove(color)
         self._wall_colors.append(color)
 
     def display(self, show_path: bool = False) -> None:
-        # WALL  = "\033[33m██\033[0m"
+        """Render the maze in the terminal using ANSI color codes.
+
+        Draws each cell row by row with top and middle lines.
+        Walls, floors, entry, exit, pattern cells and the optional
+        path are each rendered with distinct colors.
+
+        Args:
+            show_path: If True, renders the shortest path overlay.
+                       Defaults to False.
+        """
         WALL = self._wall_colors[0] + "██\033[0m"
         FLOOR = "  "
         SYMB = "\033[0;36m██\033[0m"
@@ -45,7 +88,6 @@ class Displayer:
         NORTH = 1
         WEST = 8
 
-        # path = []
         for y in range(self.height):
             top = ""
             mid = ""
