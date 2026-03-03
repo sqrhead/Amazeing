@@ -5,27 +5,29 @@ CONFIG = config.txt
 all: run
 
 install:
-	pip install build mypy flake8 --break-system-packages
-	$(PYTHON) -m build
-	pip install dist/mazegen-1.0.0-py3-none-any.whl --break-system-packages
+	python3 -m venv .venv
+	.venv/bin/python -m pip install --upgrade pip
+	.venv/bin/python -m pip install build mypy flake8
+	.venv/bin/python -m build
+	.venv/bin/python -m pip install dist/mazegen-1.0.0-py3-none-any.whl
 
 run:
-	$(PYTHON) $(MAIN) $(CONFIG)
+	.venv/bin/python $(MAIN) $(CONFIG)
 
 debug:
-	$(PYTHON) -m pdb $(MAIN) $(CONFIG)
+	.venv/bin/python -m pdb $(MAIN) $(CONFIG)
 
 lint:
-	flake8 .
-	mypy . --warn-return-any \
+	.venv/bin/flake8 .
+	.venv/bin/mypy . --warn-return-any \
 		--warn-unused-ignores \
 		--ignore-missing-imports \
 		--disallow-untyped-defs \
 		--check-untyped-defs
 
 lint-strict:
-	flake8 .
-	mypy . --strict
+	.venv/bin/flake8 .
+	.venv/bin/mypy . --strict
 
 clean:
 	find . -type d -name __pycache__ -exec rm -rf {} +
