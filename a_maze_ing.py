@@ -14,14 +14,14 @@ from displayer import Displayer
 if __name__ == "__main__":
 
     if len(sys.argv) != 2:
-        raise SystemExit("Usage: python3 a_maze_ing.py <config_file>")
+        raise SystemExit("Usage: python3 a_maze_ing.py <file_name(.txt)>")
 
     config_file = sys.argv[1]
     parser: Parser = Parser()
     config_data = parser.config(config_file)
 
     maze_gen: MazeGenerator = MazeGenerator(config_data['WIDTH'], config_data['HEIGHT'], random.randint(1, 2**32))
-    grid =maze_gen.generate(config_data['PERFECT'])
+    grid = maze_gen.generate(config_data['PERFECT'])
 
     pathfinder: Pathfinder = Pathfinder(maze_gen.grid)
     path: list[tuple[int, int]] = pathfinder.get_path(config_data['ENTRY'], config_data['EXIT'])
@@ -55,18 +55,19 @@ if __name__ == "__main__":
         if choice == '1':
             maze_gen = MazeGenerator(config_data['WIDTH'], config_data['HEIGHT'], random.randint(1, 2**32))
             # maze_gen = MazeGenerator(config_data['WIDTH'], config_data['HEIGHT'], config_data['SEED'])
-            maze_gen.generate(config_data['PERFECT'])
+            grid = maze_gen.generate(config_data['PERFECT'])
 
-            pathfinder.grid = maze_gen.grid
+            pathfinder.grid = grid
 
             path = pathfinder.get_path(config_data['ENTRY'], config_data['EXIT'])
 
-            displayer.grid = maze_gen.grid
+            displayer.grid = grid
 
             displayer.pattern_cells = maze_gen.pattern_cells
             displayer.path = path
 
-            filehex.grid = maze_gen.grid
+            filehex.grid = grid
+            filehex.path = path
             filehex.generate()
 
         elif choice == '2':

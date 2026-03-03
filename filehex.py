@@ -49,14 +49,10 @@ class FileHex:
 
             # Path
             x, y = self.path[0]
-            self.path.remove((x, y))
-            '''
-            (2,2)
-            (2,3)
-            (2,4)
-            '''
+            # self.path.remove((x, y))
+
             file.write('\n')
-            for tx, ty in self.path:
+            for tx, ty in self.path[1:]:
                 dx, dy = tx - x, ty - y
                 x = tx
                 y = ty
