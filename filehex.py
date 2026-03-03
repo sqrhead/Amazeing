@@ -48,9 +48,13 @@ class FileHex:
             file.write(str(self.exit[1]))
 
             # Path
-            x, y = self.path[0]
-            # self.path.remove((x, y))
-
+            try:
+                x, y = self.path[0]
+            except IndexError:
+                file.write('\n')
+                file.write("no path")
+                file.write('\n')
+                return
             file.write('\n')
             for tx, ty in self.path[1:]:
                 dx, dy = tx - x, ty - y

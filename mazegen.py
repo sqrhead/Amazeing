@@ -33,15 +33,23 @@ OPPOSITES: dict[int, int] = {
 
 
 class MazeGenerator:
-    def __init__(self, width: int, height: int, seed: Optional[int] = 42) -> None:
+    def __init__(
+            self,
+            width: int,
+            height: int,
+            entry: tuple[int, int],
+            exit: tuple[int, int],
+            seed: Optional[int] = 42) -> None:
         self.width = width # Width of the grid
         self.height = height # Height of the grid
-        self.sym_min_size = 8 # Min size of the maze to print the SYMB
+        self.sym_min_size = 9 # const var
         random.seed(seed)
         self.grid: list[list[int]] = [] # The grid :>
         self.visited: list[list[bool]]= [] # Nested lists needed for the Recursive Backtracking
         self.pattern_cells: list[tuple[int, int]] = [] # Used to check if coords are inside pattern cells
 
+        self.entry = entry
+        self.exit = exit
         # Grid setup
         for y in range(height):
             self.grid.append([])
@@ -119,7 +127,8 @@ class MazeGenerator:
         while counter <= target:
             rnd_x = random.randint(1, self.width - 2)
             rnd_y = random.randint(1, self.height - 2)
-            if self._is_inside_pattern(rnd_x, rnd_y) is False:
+            if self._is_inside_pattern(rnd_x, rnd_y) is False and \
+                self.entry  != (rnd_x, rnd_y) and  self.exit != (rnd_x, rnd_y):
                 self.visited[rnd_y][rnd_x] = True
                 counter += 1
 
@@ -153,23 +162,5 @@ class MazeGenerator:
         return self.grid
 
 
-# [TODO] Fix 99 custom SYMB, its not a clean solution
 # [BUG] With size (10, 7) sometimes the pattern is modified, and creating loops too
 # [BUG] Hex file has false data on SYMB cells since they are forced as special (99)
-if __name__ == "__main__":
-
-    mg: MazeGenerator = MazeGenerator(25, 10, random.randint(1, 2**32))
-
-
-    # TODO: Return the maze array
-    mg.generate(True)
-    mg.display(2, 2, 19, 9)
-
-    pathfinder = Pathfinder(mg.grid)
-    path = pathfinder.get_path(2, 2, 19, 9)
-    # displayer: Displayer = Displayer(mg.grid, path, (2, 2), (19, 9))
-    # displayer.display(True)
-
-    flhex: FileHex = FileHex(mg.grid, path, 'output.txt')
-    flhex.generate()
-    ...

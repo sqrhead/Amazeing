@@ -20,7 +20,7 @@ if __name__ == "__main__":
     parser: Parser = Parser()
     config_data = parser.config(config_file)
 
-    maze_gen: MazeGenerator = MazeGenerator(config_data['WIDTH'], config_data['HEIGHT'], random.randint(1, 2**32))
+    maze_gen: MazeGenerator = MazeGenerator(config_data['WIDTH'], config_data['HEIGHT'], config_data['ENTRY'], config_data['EXIT'], random.randint(1, 2**32))
     grid = maze_gen.generate(config_data['PERFECT'])
 
     pathfinder: Pathfinder = Pathfinder(maze_gen.grid)
@@ -53,7 +53,8 @@ if __name__ == "__main__":
             raise SystemExit()
 
         if choice == '1':
-            maze_gen = MazeGenerator(config_data['WIDTH'], config_data['HEIGHT'], random.randint(1, 2**32))
+            maze_gen: MazeGenerator = MazeGenerator(config_data['WIDTH'], config_data['HEIGHT'], config_data['ENTRY'], config_data['EXIT'], random.randint(1, 2**32))
+            # maze_gen = MazeGenerator(config_data['WIDTH'], config_data['HEIGHT'], random.randint(1, 2**32))
             # maze_gen = MazeGenerator(config_data['WIDTH'], config_data['HEIGHT'], config_data['SEED'])
             grid = maze_gen.generate(config_data['PERFECT'])
 
