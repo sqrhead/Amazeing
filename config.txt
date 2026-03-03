@@ -1,12 +1,11 @@
 # Config file for the A maze ing project
 # The = need to be attached to the key/value or error is raised
 
-WIDTH= 20
-HEIGHT= 15
-ENTRY= 1, 1
-EXIT= 12, 8
-OUTPUT_FILE= output.txt
-PERFECT= false
-SEED= 42
 
-# TODO: Second value of exit/entry is bugged on bounds
+WIDTH  = 10
+HEIGHT = 10
+ENTRY = 1, 1
+EXIT = 5, 5
+OUTPUT_FILE = myoutput.txt
+PERFECT = true
+SEED=1998

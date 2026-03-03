@@ -92,7 +92,6 @@ class Parser:
                 raise SystemExit("[Error]: SEED data wrong range >=1")
             config_data['SEED'] = data
         except KeyError:
-
             config_data['SEED'] = random.randint(1, 2**32)
         except ValueError:
             raise SystemExit("[Error]: SEED data wrong type [SEED=[int]]")
@@ -107,7 +106,9 @@ class Parser:
             elif lower == 'false':
                 config_data['PERFECT'] = False
             else:
-                raise SystemExit("[Error]: PERFECT key is not a valid bool")
+                raise SystemExit("[Error]: PERFECT value is not a valid bool")
+        except KeyError:
+            raise SystemExit("[Error]: PERFECT key is not in the config file")
         except ValueError:
             raise SystemExit("[Error]: PERFECT key is not a valid bool")
 
@@ -128,10 +129,10 @@ class Parser:
                 # After removing the comments and possible useless data
                 # We go and take the data we need from the config file
                 for data in splitted:
-                    data_split = data.split('=')
+                    data_split = data.split('=', 1)
                     if len(data_split) < 2:
                         raise ValueError("[Error] : Config file setup, went wrong !!")
-                    config_data[data_split[0]] = data_split[1]
+                    config_data[data_split[0].strip()] = data_split[1]
         except FileNotFoundError :
             raise SystemExit("[Error] Config file name is not valid")
 

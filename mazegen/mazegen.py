@@ -41,13 +41,13 @@ class MazeGenerator:
             exit: tuple[int, int],
             seed: Optional[int] = 42) -> None:
 
+        random.seed(seed)
         self.width = width # Width of the grid
         self.height = height # Height of the grid
         self.sym_min_size = 9 # const var
-        random.seed(seed)
-        self.grid: list[list[int]] = [] # The grid :>
-        self.visited: list[list[bool]]= [] # Nested lists needed for the Recursive Backtracking
-        self.pattern_cells: list[tuple[int, int]] = [] # Used to check if coords are inside pattern cells
+        self.grid: list[list[int]] = []
+        self.visited: list[list[bool]]= []
+        self.pattern_cells: list[tuple[int, int]] = []
 
         self.entry = entry
         self.exit = exit
@@ -99,7 +99,7 @@ class MazeGenerator:
         nx, ny = x + dx, y + dy
         self.grid[ny][nx] &= ~OPPOSITES[dir]
 
-    def _get_neighbors(self, x: int, y: int) -> list[tuple[int, int, int]]:
+    def _get_neighbors(self, x: int, y: int) -> list[tuple[int, int, tuple[int, int]]]:
         neighbors: list[tuple[int, int]] = []
 
         for (dx, dy) in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
@@ -119,8 +119,7 @@ class MazeGenerator:
         return neighbors
 
     def _unperfect(self) -> None:
-        # [TODO] In case once of the cell visited is start/end everything crashes
-        target = self.width * self.height // 10 + 1
+        target = self.width * self.height // 10 + self.width
         counter = 0
         rnd_dirs = [8, 4, 2, 1]
         while counter <= target:
@@ -138,14 +137,10 @@ class MazeGenerator:
                 self._remove_wall(rnd_x, rnd_y, rnd_dir)
                 counter += 1
 
-    # ************************ PUBLIC **************************************** #
-    # Params:  entry_x,entry_y start point to carv
     def generate(self, perfect: bool = True) -> list[list[int]]:
 
-        # duh
-        start_point_x: int = self.width // 2
-        # duh 2
-        start_point_y: int = self.height // 2
+        start_point_x: int = random.randint(1, self.width - 1)
+        start_point_y: int = random.randint(1, self.height - 1)
         # Stack of path
         stack: list[tuple[int, int]] = [(start_point_x,start_point_y)]
         # Visited cells so we dont need to go there again
@@ -159,7 +154,7 @@ class MazeGenerator:
             if neighbors:
                 new_dir = neighbors[random.randint(0, len(neighbors) -1)]
                 if new_dir:
-                    self._remove_wall(x, y, new_dir[2]) # [2] is the direction got from RDIRECTIONS
+                    self._remove_wall(x, y, new_dir[2])
                 self.visited[new_dir[1]][new_dir[0]] = True
                 stack.append(( new_dir[0],new_dir[1]))
             else:

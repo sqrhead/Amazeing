@@ -30,10 +30,7 @@ class FileHex:
                     file.write('\n')
                 for x in range(len(self.grid[0])):
                     hex = self.grid[y][x]
-                    if hex == 99:
-                        file.write('0')
-                    else:
-                        file.write(self.hex_table[self.grid[y][x]])
+                    file.write(self.hex_table[self.grid[y][x]])
                     ...
             file.write('\n')
             file.write('\n')
