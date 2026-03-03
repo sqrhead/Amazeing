@@ -59,9 +59,9 @@ class Parser:
                 raise SystemExit("[Error] Config file, EXIT value on outside of bounds")
             elif int(data[1]) < 0 or int(data[1]) > config_data['HEIGHT'] -1:
                 raise SystemExit("[Error] Config file, EXIT value on outside of bounds")
-            if int(data[0]) == config_data['ENTRY'][0]:
-                raise SystemExit("[Error] Config file, EXIT value overlaps on ENTRY")
-            if int(data[0]) == config_data['ENTRY'][1]:
+
+            if int(data[0]) == config_data['ENTRY'][0] and\
+                int(data[1]) == config_data['ENTRY'][1]:
                 raise SystemExit("[Error] Config file, EXIT value overlaps on ENTRY")
 
         except KeyError:
