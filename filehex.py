@@ -1,9 +1,18 @@
 
 
 class FileHex:
-    def __init__(self, grid: list[list[int]], path: list[tuple[int, int]], filename: str) -> None:
+    def __init__(
+            self,
+            grid: list[list[int]],
+            path: list[tuple[int, int]],
+            entry: tuple[int, int],
+            exit: tuple[int, int],
+            filename: str
+            ) -> None:
         self.grid = grid
         self.path = path
+        self.entry = entry
+        self.exit = exit
         self.filename = filename
         self.hex_table: str = '0123456789ABCDEF'
         self.coords: dict = {
@@ -30,8 +39,13 @@ class FileHex:
             file.write('\n')
 
             # Coords
-            file.write('2,2\n')
-            file.write('19,9\n')
+            file.write(str(self.entry[0]))
+            file.write(', ')
+            file.write(str(self.entry[1]))
+            file.write('\n')
+            file.write(str(self.exit[0]))
+            file.write(', ')
+            file.write(str(self.exit[1]))
 
             # Path
             x, y = self.path[0]

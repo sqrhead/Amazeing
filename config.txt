@@ -1,10 +1,10 @@
 # Config file for the A maze ing project
 # The = need to be attached to the key/value or error is raised
 
-WIDTH= 30
+WIDTH= 40
 HEIGHT= 20
-ENTRY= 30, 20
-EXIT= 5, 20
+ENTRY= 30, 12
+EXIT= 5, 12
 OUTPUT_FILE= output.txt
 PERFECT= false
 

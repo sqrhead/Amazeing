@@ -27,7 +27,7 @@ if __name__ == "__main__":
     path: list[tuple[int, int]] = pathfinder.get_path(config_data['ENTRY'], config_data['EXIT'])
 
     displayer: Displayer = Displayer(maze_gen.grid, path, config_data['ENTRY'], config_data['EXIT'],maze_gen.pattern_cells)
-    filehex: FileHex = FileHex(grid, path, 'output.txt')
+    filehex: FileHex = FileHex(grid, path, config_data['ENTRY'], config_data['EXIT'], 'output.txt')
     filehex.generate()
 
     # displayer
