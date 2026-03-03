@@ -30,12 +30,6 @@ if __name__ == "__main__":
     filehex: FileHex = FileHex(grid, path, config_data['ENTRY'], config_data['EXIT'], 'output.txt')
     filehex.generate()
 
-    # displayer
-    if os.name == 'nt': # Windows
-        os.system('cls')
-    else:
-        os.system('clear')
-
     choice = '1'
     path_flag = False
     while choice != '4':
@@ -60,7 +54,7 @@ if __name__ == "__main__":
 
         if choice == '1':
             maze_gen = MazeGenerator(config_data['WIDTH'], config_data['HEIGHT'], random.randint(1, 2**32))
-            # maze_gen = MazeGenerator(config_data['WIDTH'], config_data['HEIGHT'], config_data['SEEDb'])
+            # maze_gen = MazeGenerator(config_data['WIDTH'], config_data['HEIGHT'], config_data['SEED'])
             maze_gen.generate(config_data['PERFECT'])
 
             pathfinder.grid = maze_gen.grid
