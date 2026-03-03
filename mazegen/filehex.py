@@ -29,7 +29,6 @@ class FileHex:
                 if y > 0:
                     file.write('\n')
                 for x in range(len(self.grid[0])):
-                    hex = self.grid[y][x]
                     file.write(self.hex_table[self.grid[y][x]])
                     ...
             file.write('\n')
@@ -60,4 +59,3 @@ class FileHex:
                 dir = self.coords[(dx, dy)]
                 file.write(dir)
             file.write('\n')
-

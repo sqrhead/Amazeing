@@ -42,11 +42,11 @@ class MazeGenerator:
             seed: Optional[int] = 42) -> None:
 
         random.seed(seed)
-        self.width = width # Width of the grid
-        self.height = height # Height of the grid
-        self.sym_min_size = 9 # const var
+        self.width = width
+        self.height = height
+        self.sym_min_size = 9  # const var
         self.grid: list[list[int]] = []
-        self.visited: list[list[bool]]= []
+        self.visited: list[list[bool]] = []
         self.pattern_cells: list[tuple[int, int]] = []
 
         self.entry = entry
@@ -55,15 +55,13 @@ class MazeGenerator:
         for y in range(height):
             self.grid.append([])
             for x in range(width):
-                self.grid[y].append(WEST| SOUTH | EAST | NORTH) # Bit assign of all coords
-
+                self.grid[y].append(WEST | SOUTH | EAST | NORTH)
 
         # Grid visited setup
         for y in range(self.height):
             self.visited.append([])
             for x in range(self.width):
                 self.visited[y].append(False)
-
 
         # Carve 42 Pattern
         self.pattern = [
@@ -84,9 +82,10 @@ class MazeGenerator:
             for x in range(len(self.pattern[0])):
                 if self.pattern[y][x] == 1:
                     self.visited[self.start_y + y][self.start_x + x] = True
-                    self.pattern_cells.append((self.start_x + x, self.start_y + y))
+                    self.pattern_cells.append(
+                        (self.start_x + x, self.start_y + y)
+                    )
 
-    # ************************ PROTECTED **************************************** #
     def _is_inside_pattern(self, x: int, y: int) -> bool:
         if (x, y) in self.pattern_cells:
             return True
@@ -99,7 +98,9 @@ class MazeGenerator:
         nx, ny = x + dx, y + dy
         self.grid[ny][nx] &= ~OPPOSITES[dir]
 
-    def _get_neighbors(self, x: int, y: int) -> list[tuple[int, int, tuple[int, int]]]:
+    def _get_neighbors(self, x: int, y: int) -> list[
+            tuple[int, int, tuple[int, int]]
+            ]:
         neighbors: list[tuple[int, int]] = []
 
         for (dx, dy) in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
@@ -110,7 +111,7 @@ class MazeGenerator:
                 if ny < 0 or ny >= self.height:
                     continue
 
-                if self.visited[y + dy][x + dx] == False:
+                if self.visited[y + dy][x + dx] is False:
                     neighbors.append((x + dx, y + dy, RDIRECTIONS[(dx, dy)]))
 
             except Exception:
@@ -125,14 +126,15 @@ class MazeGenerator:
         while counter <= target:
             rnd_x = random.randint(1, self.width - 2)
             rnd_y = random.randint(1, self.height - 2)
-            rnd_dir = rnd_dirs[random.randint(0, len(rnd_dirs) -1)]
+            rnd_dir = rnd_dirs[random.randint(0, len(rnd_dirs) - 1)]
             dx, dy = DIRECTIONS[rnd_dir]
             nx, ny = rnd_x + dx, rnd_y + dy
             if self._is_inside_pattern(rnd_x, rnd_y) is False and \
                 not self._is_inside_pattern(nx, ny) and \
                 1 <= nx <= self.width - 2 and \
                 1 <= ny <= self.height - 2 and \
-                self.entry  != (rnd_x, rnd_y) and  self.exit != (rnd_x, rnd_y):
+                    self.entry != (rnd_x, rnd_y) and \
+                    self.exit != (rnd_x, rnd_y):
 
                 self._remove_wall(rnd_x, rnd_y, rnd_dir)
                 counter += 1
@@ -142,21 +144,20 @@ class MazeGenerator:
         start_point_x: int = random.randint(1, self.width - 1)
         start_point_y: int = random.randint(1, self.height - 1)
         # Stack of path
-        stack: list[tuple[int, int]] = [(start_point_x,start_point_y)]
+        stack: list[tuple[int, int]] = [(start_point_x, start_point_y)]
         # Visited cells so we dont need to go there again
         self.visited[start_point_y][start_point_x] = True
-
 
         while stack:
             x, y = stack[-1]
             neighbors = self._get_neighbors(x, y)
 
             if neighbors:
-                new_dir = neighbors[random.randint(0, len(neighbors) -1)]
+                new_dir = neighbors[random.randint(0, len(neighbors) - 1)]
                 if new_dir:
                     self._remove_wall(x, y, new_dir[2])
                 self.visited[new_dir[1]][new_dir[0]] = True
-                stack.append(( new_dir[0],new_dir[1]))
+                stack.append((new_dir[0], new_dir[1]))
             else:
                 stack.pop()
 
@@ -171,7 +172,3 @@ class MazeGenerator:
             self._unperfect()
 
         return self.grid
-
-
-# [BUG] With size (10, 7) sometimes the pattern is modified, and creating loops too
-# [BUG] Hex file has false data on SYMB cells since they are forced as special (99)

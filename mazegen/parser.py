@@ -1,7 +1,7 @@
 from typing import Union, Optional
 import random
 
-# [TODO] Bounds check on entry/exit
+
 # This class will manage the reading from the config file
 class Parser:
 
@@ -39,13 +39,19 @@ class Parser:
             data = data.strip()
             data = data.split(',')
             if len(data) != 2:
-                raise SystemExit("[Error] Config file, ENTRY value wrong format")
+                raise SystemExit(
+                    "[Error] Config file, ENTRY value wrong format"
+                    )
             config_data['ENTRY'] = (int(data[0]), int(data[1]))
 
-            if int(data[0]) < 0 or int(data[0]) > config_data['WIDTH'] -1:
-                raise SystemExit("[Error] Config file, ENTRY value on outside of bounds")
-            elif int(data[1]) < 0 or int(data[1]) > config_data['HEIGHT'] -1:
-                raise SystemExit("[Error] Config file, ENTRY value on outside of bounds")
+            if int(data[0]) < 0 or int(data[0]) > config_data['WIDTH'] - 1:
+                raise SystemExit(
+                    "[Error] Config file, ENTRY value on outside of bounds"
+                    )
+            elif int(data[1]) < 0 or int(data[1]) > config_data['HEIGHT'] - 1:
+                raise SystemExit(
+                    "[Error] Config file, ENTRY value on outside of bounds"
+                    )
         except KeyError:
             raise SystemExit("[Error]: ENTRY is not in the config file")
         except ValueError:
@@ -57,17 +63,25 @@ class Parser:
             data = data.strip()
             data = data.split(',')
             if len(data) != 2:
-                raise SystemExit("[Error] Config file, ENTRY value wrong format")
+                raise SystemExit(
+                    "[Error] Config file, ENTRY value wrong format"
+                    )
             config_data['EXIT'] = (int(data[0]), int(data[1]))
 
-            if int(data[0]) < 0 or int(data[0]) > config_data['WIDTH'] -1:
-                raise SystemExit("[Error] Config file, EXIT value on outside of bounds")
-            elif int(data[1]) < 0 or int(data[1]) > config_data['HEIGHT'] -1:
-                raise SystemExit("[Error] Config file, EXIT value on outside of bounds")
+            if int(data[0]) < 0 or int(data[0]) > config_data['WIDTH'] - 1:
+                raise SystemExit(
+                    "[Error] Config file, EXIT value on outside of bounds"
+                    )
+            elif int(data[1]) < 0 or int(data[1]) > config_data['HEIGHT'] - 1:
+                raise SystemExit(
+                    "[Error] Config file, EXIT value on outside of bounds"
+                    )
 
             if int(data[0]) == config_data['ENTRY'][0] and\
-                int(data[1]) == config_data['ENTRY'][1]:
-                raise SystemExit("[Error] Config file, EXIT value overlaps on ENTRY")
+                    int(data[1]) == config_data['ENTRY'][1]:
+                raise SystemExit(
+                    "[Error] Config file, EXIT value overlaps on ENTRY"
+                    )
 
         except KeyError:
             raise SystemExit("[Error]: EXIT is not in the config file")
@@ -78,8 +92,11 @@ class Parser:
         try:
             data = config_data['OUTPUT_FILE']
             data = data.strip()
+            config_data['OUTPUT_FILE'] = data
             if not data.endswith('.txt'):
-                raise SystemExit("[Error]: OUTPUT_FILE invalid file extension (.txt)")
+                raise SystemExit(
+                    "[Error]: OUTPUT_FILE invalid file extension (.txt)"
+                    )
         except KeyError:
             raise SystemExit("[Error]: OUTPUT_FILE is not in the config file")
 
@@ -112,7 +129,9 @@ class Parser:
         except ValueError:
             raise SystemExit("[Error]: PERFECT key is not a valid bool")
 
-    def config(self, config_file: Optional[str] = "config.txt") -> dict[str,Union[str, bool, int, list]]:
+    def config(self, config_file: Optional[str] = "config.txt") -> dict[
+        str, Union[str, bool, int, list]
+            ]:
         config_data: dict = {}
         # We open the file asked in the subject
         try:
@@ -131,9 +150,11 @@ class Parser:
                 for data in splitted:
                     data_split = data.split('=', 1)
                     if len(data_split) < 2:
-                        raise ValueError("[Error] : Config file setup, went wrong !!")
+                        raise ValueError(
+                            "[Error] : Config file setup, went wrong !!"
+                            )
                     config_data[data_split[0].strip()] = data_split[1]
-        except FileNotFoundError :
+        except FileNotFoundError:
             raise SystemExit("[Error] Config file name is not valid")
 
         # Here we use a series of functions
@@ -147,8 +168,3 @@ class Parser:
         self._config_seed(config_data)
         self._config_output(config_data)
         return config_data
-
-if __name__ == '__main__':
-    parser: Parser = Parser()
-    config_data = parser.config()
-    print(f"{config_data}")

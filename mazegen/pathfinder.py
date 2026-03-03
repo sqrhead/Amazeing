@@ -1,18 +1,7 @@
 from __future__ import annotations
 from collections import deque
-'''
-***** Class PathfinderNode ************************************************************************
--- For this pathfinding algorithm we need to retrace backwards
--- The way we did this is by PathfinderNodes, it has current coords, and parent coords
-***************************************************************************************************
 
-***** Class Pathfinding ***************************************************************************
--- The idea is to travel from start coords until we find end coords
--- The problem is we add to the 'path' too many useless coords
--- So we use the PathfinderNodes to start from end and retrace everything
--- The name Breadth First Search is the name of the algorithm if you want to find more about it
-***************************************************************************************************
-'''
+
 NORTH, EAST, SOUTH, WEST = 1, 2, 4, 8
 
 DIRECTIONS = {
@@ -21,6 +10,7 @@ DIRECTIONS = {
     WEST: (-1, 0),
     EAST: (1, 0)
 }
+
 
 class PathfinderNode:
     def __init__(self, x: int, y: int, parent: PathfinderNode = None):
@@ -33,6 +23,7 @@ class PathfinderNode:
             return True
         return False
 
+
 class Pathfinder:
     def __init__(self, grid: list[list[int]]):
         self.grid = grid
@@ -42,13 +33,17 @@ class Pathfinder:
 
         for dir, (dx, dy) in DIRECTIONS.items():
             nx, ny = x + dx, y + dy
-            if nx >= 0 and nx < len(self.grid[0]) and ny >= 0 and ny < len(self.grid):
+            if nx >= 0 and nx < len(self.grid[0]) and \
+                    ny >= 0 and ny < len(self.grid):
                 if not (self.grid[y][x] & dir):
                     neighbors.append((nx, ny))
         return neighbors
 
-
-    def get_path(self, start: tuple[int, int], end: tuple[int, int]) -> list[tuple[int, int]]:
+    def get_path(
+            self,
+            start: tuple[int, int],
+            end: tuple[int, int]
+            ) -> list[tuple[int, int]]:
         pn_start: PathfinderNode = PathfinderNode(start[0], start[1])
 
         que = deque([pn_start])
@@ -72,4 +67,3 @@ class Pathfinder:
                     pn_neighbor = PathfinderNode(nx, ny, curr)
                     que.append(pn_neighbor)
         return []
-

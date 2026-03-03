@@ -1,4 +1,3 @@
-from typing import Optional
 
 class Displayer:
     def __init__(
@@ -30,7 +29,6 @@ class Displayer:
         if end in pattern_cells:
             raise SystemExit("[Error] Config file, EXIT value on SYMBOL")
 
-
     def set_next_color(self) -> None:
         color = self._wall_colors[0]
         self._wall_colors.remove(color)
@@ -38,9 +36,9 @@ class Displayer:
 
     def display(self, show_path: bool = False) -> None:
         # WALL  = "\033[33m██\033[0m"
-        WALL  = self._wall_colors[0] + "██\033[0m"
+        WALL = self._wall_colors[0] + "██\033[0m"
         FLOOR = "  "
-        SYMB  = "\033[0;36m██\033[0m"
+        SYMB = "\033[0;36m██\033[0m"
         ENTRY = "\033[32m██\033[0m"
         EXIT = "\033[1;31m██\033[0m"
         PATH = "\033[1;55m ■\033[0m"
@@ -54,7 +52,7 @@ class Displayer:
             for x in range(self.width):
                 cell = self.grid[y][x]
 
-                if (x,y) in self.pattern_cells:
+                if (x, y) in self.pattern_cells:
                     top += SYMB + SYMB
                     mid += SYMB + SYMB
                 else:
@@ -63,7 +61,8 @@ class Displayer:
                     # North cell
                     if (cell & NORTH):
                         top += WALL
-                    elif (x, y -1) in self.path and (x, y) in self.path and show_path:
+                    elif (x, y - 1) in self.path and \
+                            (x, y) in self.path and show_path:
                         top += PATH
                     else:
                         top += FLOOR
@@ -72,7 +71,8 @@ class Displayer:
                     # West wall
                     if (cell & WEST):
                         mid += WALL
-                    elif (x - 1, y) in self.path and (x, y) in self.path and show_path:
+                    elif (x - 1, y) in self.path and \
+                            (x, y) in self.path and show_path:
                         mid += PATH
                     else:
                         mid += FLOOR
@@ -89,7 +89,11 @@ class Displayer:
                         mid += FLOOR
 
             # Right most wall/symb
-            end_cap = SYMB if (self.width -1, y) in self.pattern_cells else WALL
+            end_cap = ""
+            if (self.width - 1, y) in self.pattern_cells:
+                end_cap += SYMB
+            else:
+                end_cap += WALL
 
             # end_cap = SYMB if self.grid[y][self.width-1] == 99 else WALL
             print(top + end_cap)

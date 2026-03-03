@@ -2,22 +2,12 @@ import random
 import sys
 import os
 
-# from mazegen import MazeGenerator
-# from filehex import FileHex
-# from pathfinder import Pathfinder
-# from parser import Parser
-# from displayer import Displayer
-
 from mazegen import MazeGenerator
 from mazegen import Pathfinder
 from mazegen import FileHex
 from mazegen import Parser
 from mazegen import Displayer
 
-
-# [TODO] Check hex for east/south most walls if they are correct
-# [TODO] Fix filehex shit, entry/exit
-# its kinda shit :>
 if __name__ == "__main__":
 
     if len(sys.argv) != 2:
@@ -37,17 +27,32 @@ if __name__ == "__main__":
     grid = maze_gen.generate(config_data['PERFECT'])
 
     pathfinder: Pathfinder = Pathfinder(maze_gen.grid)
-    path: list[tuple[int, int]] = pathfinder.get_path(config_data['ENTRY'], config_data['EXIT'])
+    path: list[tuple[int, int]] = pathfinder.get_path(
+        config_data['ENTRY'],
+        config_data['EXIT']
+        )
 
-    displayer: Displayer = Displayer(maze_gen.grid, path, config_data['ENTRY'], config_data['EXIT'],maze_gen.pattern_cells)
-    filehex: FileHex = FileHex(grid, path, config_data['ENTRY'], config_data['EXIT'], config_data['OUTPUT_FILE'])
+    displayer: Displayer = Displayer(
+        maze_gen.grid,
+        path,
+        config_data['ENTRY'],
+        config_data['EXIT'],
+        maze_gen.pattern_cells
+        )
+    filehex: FileHex = FileHex(
+        grid,
+        path,
+        config_data['ENTRY'],
+        config_data['EXIT'],
+        config_data['OUTPUT_FILE']
+        )
     filehex.generate()
 
     choice = '1'
     path_flag = False
     while choice != '4':
 
-        if os.name == 'nt': # Windows
+        if os.name == 'nt':  # Windows
             os.system('cls')
         else:
             os.system('clear')
@@ -77,7 +82,10 @@ if __name__ == "__main__":
 
             pathfinder.grid = grid
 
-            path = pathfinder.get_path(config_data['ENTRY'], config_data['EXIT'])
+            path = pathfinder.get_path(
+                config_data['ENTRY'],
+                config_data['EXIT']
+                )
 
             displayer.grid = grid
 
