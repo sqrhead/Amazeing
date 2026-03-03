@@ -1,6 +1,6 @@
-- [TODO] Test tha shit
-- [TODO] Dawg cmon
 - [TODO] Marvin stay chill
 - [TODO] Single package module
 - [TODO] Docstring/mypy/flake8
-- [TODO] Clean the code
+- [TODO] Far partecipare marvin alla midget wwe
+- [TODO] readme
+- [INFO] Marvin ho inserito start/entry nel costruttore della classe per il bug perfect
