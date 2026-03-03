@@ -7,5 +7,5 @@ HEIGHT = 10
 ENTRY = 1, 1
 EXIT = 5, 5
 OUTPUT_FILE = myoutput.txt
-PERFECT = true
+PERFECT = false
 SEED=1998
