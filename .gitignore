@@ -6,3 +6,4 @@ __pycache__/
 
 # Venv
 .venv/
+.venv/**
