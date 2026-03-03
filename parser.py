@@ -41,7 +41,7 @@ class Parser:
             config_data['ENTRY'] = (int(data[0]), int(data[1]))
             if int(data[0]) < 0 or int(data[0]) > config_data['WIDTH'] -1:
                 raise SystemExit("[Error] Config file, ENTRY value on outside of bounds")
-            elif int(data[1]) < 0 or int(data[0]) > config_data['HEIGHT'] -1:
+            elif int(data[1]) < 0 or int(data[1]) > config_data['HEIGHT'] -1:
                 raise SystemExit("[Error] Config file, ENTRY value on outside of bounds")
         except KeyError:
             raise SystemExit("[Error]: ENTRY is not in the config file")
@@ -57,7 +57,7 @@ class Parser:
 
             if int(data[0]) < 0 or int(data[0]) > config_data['WIDTH'] -1:
                 raise SystemExit("[Error] Config file, EXIT value on outside of bounds")
-            elif int(data[1]) < 0 or int(data[0]) > config_data['HEIGHT'] -1:
+            elif int(data[1]) < 0 or int(data[1]) > config_data['HEIGHT'] -1:
                 raise SystemExit("[Error] Config file, EXIT value on outside of bounds")
         except KeyError:
             raise SystemExit("[Error]: EXIT is not in the config file")

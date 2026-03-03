@@ -8,6 +8,7 @@ from pathfinder import Pathfinder
 from parser import Parser
 from displayer import Displayer
 
+# [TODO] Check hex for east/south most walls if they are correct
 # [TODO] Fix filehex shit, entry/exit
 # its kinda shit :>
 if __name__ == "__main__":
@@ -20,13 +21,14 @@ if __name__ == "__main__":
     config_data = parser.config(config_file)
 
     maze_gen: MazeGenerator = MazeGenerator(config_data['WIDTH'], config_data['HEIGHT'], random.randint(1, 2**32))
-    maze_gen.generate(config_data['PERFECT'])
+    grid =maze_gen.generate(config_data['PERFECT'])
 
     pathfinder: Pathfinder = Pathfinder(maze_gen.grid)
     path: list[tuple[int, int]] = pathfinder.get_path(config_data['ENTRY'], config_data['EXIT'])
 
     displayer: Displayer = Displayer(maze_gen.grid, path, config_data['ENTRY'], config_data['EXIT'],maze_gen.pattern_cells)
-    filehex: FileHex = FileHex(None, None, 'output.txt')
+    filehex: FileHex = FileHex(grid, path, 'output.txt')
+    filehex.generate()
 
     # displayer
     if os.name == 'nt': # Windows
@@ -58,6 +60,7 @@ if __name__ == "__main__":
 
         if choice == '1':
             maze_gen = MazeGenerator(config_data['WIDTH'], config_data['HEIGHT'], random.randint(1, 2**32))
+            # maze_gen = MazeGenerator(config_data['WIDTH'], config_data['HEIGHT'], config_data['SEEDb'])
             maze_gen.generate(config_data['PERFECT'])
 
             pathfinder.grid = maze_gen.grid
@@ -68,6 +71,9 @@ if __name__ == "__main__":
 
             displayer.pattern_cells = maze_gen.pattern_cells
             displayer.path = path
+
+            filehex.grid = maze_gen.grid
+            filehex.generate()
 
         elif choice == '2':
             path_flag = not path_flag

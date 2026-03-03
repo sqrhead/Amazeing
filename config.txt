@@ -1,11 +1,13 @@
 # Config file for the A maze ing project
 # The = need to be attached to the key/value or error is raised
 
-WIDTH= 12
-HEIGHT= 15
-ENTRY= 11, 6
-EXIT= 11,4
+WIDTH= 30
+HEIGHT= 20
+ENTRY= 30, 20
+EXIT= 5, 20
 OUTPUT_FILE= output.txt
-PERFECT= true
+PERFECT= false
 
 # TODO: Output file  error checks#
+# TODO: Check tuples size
+# TODO: Second value of exit/entry is bugged on bounds
