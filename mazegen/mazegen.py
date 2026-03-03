@@ -40,6 +40,7 @@ class MazeGenerator:
             entry: tuple[int, int],
             exit: tuple[int, int],
             seed: Optional[int] = 42) -> None:
+
         self.width = width # Width of the grid
         self.height = height # Height of the grid
         self.sym_min_size = 9 # const var
@@ -82,11 +83,8 @@ class MazeGenerator:
         for y in range(len(self.pattern)):
             for x in range(len(self.pattern[0])):
                 if self.pattern[y][x] == 1:
-                    self.grid[self.start_y + y][self.start_x + x] = (WEST | SOUTH | EAST | NORTH)
                     self.visited[self.start_y + y][self.start_x + x] = True
                     self.pattern_cells.append((self.start_x + x, self.start_y + y))
-                else:
-                    self.grid[self.start_y + y][self.start_x + x] = 15
 
     # ************************ PROTECTED **************************************** #
     def _is_inside_pattern(self, x: int, y: int) -> bool:
@@ -122,14 +120,22 @@ class MazeGenerator:
 
     def _unperfect(self) -> None:
         # [TODO] In case once of the cell visited is start/end everything crashes
-        target = self.width // 10 + 1
+        target = self.width * self.height // 10 + 1
         counter = 0
+        rnd_dirs = [8, 4, 2, 1]
         while counter <= target:
             rnd_x = random.randint(1, self.width - 2)
             rnd_y = random.randint(1, self.height - 2)
+            rnd_dir = rnd_dirs[random.randint(0, len(rnd_dirs) -1)]
+            dx, dy = DIRECTIONS[rnd_dir]
+            nx, ny = rnd_x + dx, rnd_y + dy
             if self._is_inside_pattern(rnd_x, rnd_y) is False and \
+                not self._is_inside_pattern(nx, ny) and \
+                1 <= nx <= self.width - 2 and \
+                1 <= ny <= self.height - 2 and \
                 self.entry  != (rnd_x, rnd_y) and  self.exit != (rnd_x, rnd_y):
-                self.visited[rnd_y][rnd_x] = True
+
+                self._remove_wall(rnd_x, rnd_y, rnd_dir)
                 counter += 1
 
     # ************************ PUBLIC **************************************** #
@@ -144,8 +150,7 @@ class MazeGenerator:
         stack: list[tuple[int, int]] = [(start_point_x,start_point_y)]
         # Visited cells so we dont need to go there again
         self.visited[start_point_y][start_point_x] = True
-        if not perfect:
-            self._unperfect()
+
 
         while stack:
             x, y = stack[-1]
@@ -159,6 +164,9 @@ class MazeGenerator:
                 stack.append(( new_dir[0],new_dir[1]))
             else:
                 stack.pop()
+
+        if not perfect:
+            self._unperfect()
         return self.grid
 
 

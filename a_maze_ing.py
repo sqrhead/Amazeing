@@ -2,11 +2,18 @@ import random
 import sys
 import os
 
+# from mazegen import MazeGenerator
+# from filehex import FileHex
+# from pathfinder import Pathfinder
+# from parser import Parser
+# from displayer import Displayer
+
 from mazegen import MazeGenerator
-from filehex import FileHex
-from pathfinder import Pathfinder
-from parser import Parser
-from displayer import Displayer
+from mazegen import Pathfinder
+from mazegen import FileHex
+from mazegen import Parser
+from mazegen import Displayer
+
 
 # [TODO] Check hex for east/south most walls if they are correct
 # [TODO] Fix filehex shit, entry/exit
@@ -20,7 +27,13 @@ if __name__ == "__main__":
     parser: Parser = Parser()
     config_data = parser.config(config_file)
 
-    maze_gen: MazeGenerator = MazeGenerator(config_data['WIDTH'], config_data['HEIGHT'], config_data['ENTRY'], config_data['EXIT'], random.randint(1, 2**32))
+    maze_gen: MazeGenerator = MazeGenerator(
+        config_data['WIDTH'],
+        config_data['HEIGHT'],
+        config_data['ENTRY'],
+        config_data['EXIT'],
+        config_data['SEED']
+        )
     grid = maze_gen.generate(config_data['PERFECT'])
 
     pathfinder: Pathfinder = Pathfinder(maze_gen.grid)
@@ -76,7 +89,6 @@ if __name__ == "__main__":
 
         elif choice == '3':
             displayer.set_next_color()
-        elif choice == '4':
-            raise SystemExit()
+
         else:
             continue

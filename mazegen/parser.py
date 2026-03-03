@@ -38,7 +38,10 @@ class Parser:
             data = config_data['ENTRY']
             data = data.strip()
             data = data.split(',')
+            if len(data) != 2:
+                raise SystemExit("[Error] Config file, ENTRY value wrong format")
             config_data['ENTRY'] = (int(data[0]), int(data[1]))
+
             if int(data[0]) < 0 or int(data[0]) > config_data['WIDTH'] -1:
                 raise SystemExit("[Error] Config file, ENTRY value on outside of bounds")
             elif int(data[1]) < 0 or int(data[1]) > config_data['HEIGHT'] -1:
@@ -53,6 +56,8 @@ class Parser:
             data = config_data['EXIT']
             data = data.strip()
             data = data.split(',')
+            if len(data) != 2:
+                raise SystemExit("[Error] Config file, ENTRY value wrong format")
             config_data['EXIT'] = (int(data[0]), int(data[1]))
 
             if int(data[0]) < 0 or int(data[0]) > config_data['WIDTH'] -1:

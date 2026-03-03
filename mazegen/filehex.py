@@ -40,11 +40,11 @@ class FileHex:
 
             # Coords
             file.write(str(self.entry[0]))
-            file.write(', ')
+            file.write(',')
             file.write(str(self.entry[1]))
             file.write('\n')
             file.write(str(self.exit[0]))
-            file.write(', ')
+            file.write(',')
             file.write(str(self.exit[1]))
 
             # Path
